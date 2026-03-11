@@ -1,0 +1,343 @@
+/*-- scss:defaults --*/
+
+/* === DEN Brand Colors === */
+$den-brown: #6A4A3C;
+$den-dark: #2B2B2B;
+$den-gray: #F2F2F2;
+$den-white: #FFFFFF;
+
+/* === Reveal.js Variable Overrides === */
+$body-bg: $den-white;
+$body-color: $den-dark;
+$link-color: $den-brown;
+$presentation-heading-color: $den-dark;
+$presentation-heading-font: "Helvetica Neue", "Arial", sans-serif;
+$presentation-font-size-root: 30px;
+
+/*-- scss:rules --*/
+
+/* === Base Typography === */
+.reveal {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: $den-dark;
+}
+
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-weight: 500;
+  color: $den-dark;
+}
+
+/* === Title Slide === */
+#title-slide {
+  text-align: center !important;
+
+  h1.title {
+    color: $den-white;
+    font-size: 1.6em;
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    bottom: -300px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: 0;
+    padding: 0 40px;
+    box-sizing: border-box;
+    transition: font-size 0.2s ease, bottom 0.2s ease;
+  }
+
+  /* 2-line title: smaller font, move up */
+  &.title-2-lines h1.title {
+    font-size: 1.3em;
+    bottom: -270px;
+  }
+
+  /* 3+ line title: 25% smaller than original, move up more */
+  &.title-3-lines h1.title {
+    font-size: 1.2em;
+    bottom: -220px;
+  }
+
+  /* Hide logo on title slide */
+  .slide-logo {
+    display: none !important;
+  }
+
+  .author {
+    color: $den-white;
+    font-size: 0.9em;
+    position: absolute;
+    top: 42%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: 0;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .date {
+    color: $den-white;
+    font-size: 0.75em;
+    position: absolute;
+    bottom: -500px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: 0;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Hide page number on title slide */
+#title-slide~.slide-number,
+body:has(#title-slide.present) .slide-number {
+  display: none !important;
+}
+
+/* === Content Slides === */
+.reveal .slides section {
+  text-align: left;
+}
+
+/* === Vertical brown line before headings (content slides only) === */
+.reveal .slides section:not(#title-slide) h2 {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  transition: font-size 0.2s ease;
+}
+
+.reveal .slides section:not(#title-slide) h2::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 1.4em;
+  background: $den-brown;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+/* === Auto-shrink long headings === */
+.reveal .slides section:not(#title-slide) h2.heading-long {
+  font-size: 0.85em;
+}
+
+.reveal .slides section:not(#title-slide) h2.heading-very-long {
+  font-size: 0.75em;
+}
+
+/* === Sub-headings (h3, h4, h5, h6) for content slides === */
+.reveal .slides section:not(#title-slide) h3,
+.reveal .slides section:not(#title-slide) h4,
+.reveal .slides section:not(#title-slide) h5,
+.reveal .slides section:not(#title-slide) h6 {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: 0.8em;
+  margin-bottom: 0.4em;
+  color: $den-dark;
+}
+
+.reveal .slides section:not(#title-slide) h3 {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: $den-brown;
+}
+
+.reveal .slides section:not(#title-slide) h4 {
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.reveal .slides section:not(#title-slide) h5 {
+  font-size: 0.75em;
+  font-weight: 500;
+}
+
+.reveal .slides section:not(#title-slide) h6 {
+  font-size: 0.7em;
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* === Block containers (callout boxes) === */
+.reveal .slides section .block {
+  position: relative;
+  display: block;
+  width: 100%;
+  background: rgba($den-gray, 0.5);
+  border-left: 4px solid $den-brown;
+  padding: 0.8em 1em;
+  margin: 1em 0;
+  box-sizing: border-box;
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    position: relative;
+    display: block;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: $den-brown;
+  }
+
+  p {
+    margin: 0.5em 0;
+  }
+
+  .math {
+    display: block;
+    margin: 0.5em 0;
+  }
+}
+
+/* === Logo at top-right (viewport-relative for consistent sizing) === */
+.reveal .slide-logo {
+  position: fixed !important;
+  top: 1.5vh !important;
+  right: 1.5vw !important;
+  height: 10.5vh !important;
+  max-height: none !important;
+  width: auto !important;
+  z-index: 1000;
+}
+
+/* === Page number block bottom-right corner with brown accent === */
+.reveal .slide-number {
+  background: $den-brown !important;
+  color: $den-white !important;
+  padding: 8px 14px !important;
+  border-radius: 0 !important;
+  font-size: 0.6em !important;
+  font-weight: 600;
+  position: fixed !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  top: auto !important;
+  left: auto !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 35px !important;
+  max-height: 40px !important;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* === Ending Slide === */
+/* Background is set via data-background-image attribute in Quarto for full coverage */
+.reveal .slides section.ending-slide {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  h2,
+  h3,
+  p {
+    color: $den-white;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    text-align: center;
+  }
+
+  h2::before {
+    display: none !important;
+  }
+}
+
+/* Hide logo on ending slide */
+.reveal .slides section.ending-slide .slide-logo,
+.ending-slide~.slide-logo {
+  display: none !important;
+}
+
+/* Global rule to hide logo on ending slide */
+body:has(.ending-slide.present) .slide-logo {
+  display: none !important;
+}
+
+/* === Lists === */
+.reveal ul,
+.reveal ol {
+  margin-left: 1em;
+}
+
+.reveal li {
+  margin-bottom: 0.5em;
+  line-height: 1.4;
+}
+
+/* === Blockquotes === */
+.reveal blockquote {
+  border-left: 4px solid $den-brown;
+  padding-left: 1em;
+  font-style: italic;
+  background: rgba($den-gray, 0.5);
+}
+
+/* === Code blocks === */
+.reveal pre {
+  border-left: 4px solid $den-brown;
+}
+
+/* === Tables === */
+.reveal table {
+  border-collapse: collapse;
+}
+
+.reveal table th {
+  background: $den-brown;
+  color: $den-white;
+  padding: 10px 15px;
+}
+
+.reveal table td {
+  border-bottom: 1px solid $den-gray;
+  padding: 8px 15px;
+}
+
+/* === Slide Size Classes for Heavy Content === */
+/* Use {.small} or {.smaller} on slide headers to reduce font size */
+.reveal .slides section.small {
+  font-size: 0.85em;
+
+  h2 {
+    font-size: 1.1em;
+  }
+
+  li {
+    margin-bottom: 0.3em;
+    line-height: 1.3;
+  }
+
+  pre {
+    font-size: 0.9em;
+  }
+}
+
+.reveal .slides section.smaller {
+  font-size: 0.7em;
+
+  h2 {
+    font-size: 1.0em;
+  }
+
+  li {
+    margin-bottom: 0.25em;
+    line-height: 1.2;
+  }
+
+  pre {
+    font-size: 0.85em;
+  }
+}

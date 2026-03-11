@@ -1,0 +1,33 @@
+title: "DEN Branded Template"
+author: "DEN"
+version: "1.0.0"
+quarto-required: ">=1.4"
+contributes:
+  formats:
+    revealjs:
+      theme: [default, revealjs.scss]
+      slide-number: true
+      footer: ""
+      logo: logo.png
+      title-slide-attributes:
+        data-background-image: title.png
+        data-background-size: cover
+      css: revealjs.scss
+      include-after-body: title-detect.html
+      filters:
+        - ending-slide.lua
+        - small-slide.lua
+      format-resources:
+        - end.png
+    beamer:
+      aspectratio: 169
+      theme: default
+      colortheme: default
+      include-in-header: beamer-header.tex
+      filters:
+        - ending-slide.lua
+        - small-slide.lua
+      format-resources:
+        - title.png
+        - end.png
+        - logo.png

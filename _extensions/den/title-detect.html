@@ -1,0 +1,103 @@
+<script>
+// Detect title line count and add appropriate CSS class
+document.addEventListener('DOMContentLoaded', function() {
+  const titleSlide = document.getElementById('title-slide');
+  if (!titleSlide) return;
+  
+  const titleEl = titleSlide.querySelector('h1.title');
+  if (!titleEl) return;
+  
+  // Method 1: Check by character count (approximate)
+  const titleText = titleEl.textContent || '';
+  const charCount = titleText.length;
+  
+  // Method 2: Check actual rendered height vs single line height
+  // We use a timeout to ensure styles are applied
+  setTimeout(function() {
+    const computedStyle = window.getComputedStyle(titleEl);
+    const lineHeight = parseFloat(computedStyle.lineHeight) || parseFloat(computedStyle.fontSize) * 1.2;
+    const titleHeight = titleEl.offsetHeight;
+    const estimatedLines = Math.round(titleHeight / lineHeight);
+    
+    // Also consider character count as fallback
+    // ~40-50 chars typically fit on one line at 1.6em
+    let lines = estimatedLines;
+    if (charCount > 80) lines = Math.max(lines, 3);
+    else if (charCount > 45) lines = Math.max(lines, 2);
+    
+    // Apply appropriate class
+    if (lines >= 3) {
+      titleSlide.classList.add('title-3-lines');
+    } else if (lines >= 2) {
+      titleSlide.classList.add('title-2-lines');
+    }
+  }, 100);
+});
+
+// Hide/show logo based on current slide
+function updateLogoVisibility() {
+  const logo = document.querySelector('.slide-logo');
+  if (!logo) return;
+  
+  const currentSlide = document.querySelector('.slides section.present');
+  if (!currentSlide) return;
+  
+  // Hide logo on title slide and ending slide
+  const isTitleSlide = currentSlide.id === 'title-slide';
+  const isEndingSlide = currentSlide.classList.contains('ending-slide');
+  
+  if (isTitleSlide || isEndingSlide) {
+    logo.style.display = 'none';
+  } else {
+    logo.style.display = 'block';
+  }
+}
+
+// Detect long headings and apply smaller font classes
+function checkHeadingLength() {
+  document.querySelectorAll('.slides section:not(#title-slide) h2').forEach(function(h2) {
+    const text = h2.textContent || '';
+    const charCount = text.length;
+    
+    // Remove existing heading length classes
+    h2.classList.remove('heading-long', 'heading-very-long');
+    
+    // Apply classes based on character count
+    // ~50 chars typically fit on one line at standard h2 size
+    if (charCount > 70) {
+      h2.classList.add('heading-very-long');
+    } else if (charCount > 50) {
+      h2.classList.add('heading-long');
+    }
+  });
+}
+
+// Also run on Reveal.js ready event
+if (typeof Reveal !== 'undefined') {
+  Reveal.on('ready', function() {
+    const titleSlide = document.getElementById('title-slide');
+    if (titleSlide) {
+      const titleEl = titleSlide.querySelector('h1.title');
+      if (titleEl) {
+        const titleText = titleEl.textContent || '';
+        const charCount = titleText.length;
+        
+        if (charCount > 80) {
+          titleSlide.classList.add('title-3-lines');
+        } else if (charCount > 45) {
+          titleSlide.classList.add('title-2-lines');
+        }
+      }
+    }
+    
+    // Check heading lengths
+    checkHeadingLength();
+    
+    // Initial logo visibility check
+    updateLogoVisibility();
+  });
+  
+  // Update logo visibility on slide change
+  Reveal.on('slidechanged', updateLogoVisibility);
+}
+</script>
