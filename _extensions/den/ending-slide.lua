@@ -1,22 +1,16 @@
 -- Lua filter to handle ending slide for beamer and revealjs
--- For beamer: creates a plain frame with tikz full-page background (via Div)
--- For revealjs: uses Header with ending-slide class (CSS handles styling)
+-- Syntax: `## Thank you {.ending-slide background-image="end.png" background-size="cover"}`
+-- The heading text is rendered over the background image. If the heading is
+-- empty, it defaults to "Thank you" (user can write "Terima kasih", etc.).
+-- For backward compatibility, an empty `::: {.ending-slide} :::` div after
+-- the header is still accepted and silently dropped.
 
 function Header(el)
-  -- For beamer, remove the ending-slide header (we use Div instead)
   if el.level == 2 and el.classes:includes("ending-slide") then
-    if FORMAT:match("beamer") or FORMAT:match("latex") then
-      return {}
-    end
-  end
-  return el
-end
+    local text = pandoc.utils.stringify(el.content)
+    if text == "" then text = "Thank you" end
 
-function Div(el)
-  if el.classes:includes("ending-slide") then
     if FORMAT:match("beamer") or FORMAT:match("latex") then
-      -- For beamer, replace with raw LaTeX
-      -- First close any open frame, then create the ending frame
       local bg_image = el.attributes["background-image"] or "end.png"
       return pandoc.RawBlock("latex", string.format([[
 \end{frame}
@@ -25,12 +19,25 @@ function Div(el)
 \node[anchor=center] at (current page.center) {
 \includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{%s}
 };
+\node[anchor=center, text=white, align=center] at (current page.center) {\Huge\bfseries %s};
 \end{tikzpicture}
-]], bg_image))
+]], bg_image, text))
     else
-      -- For revealjs, remove the Div (we use Header instead)
-      return {}
+      -- Reveal.js: ensure the heading has visible text even if user left it blank
+      if pandoc.utils.stringify(el.content) == "" then
+        el.content = {pandoc.Str("Thank"), pandoc.Space(), pandoc.Str("you")}
+      end
+      return el
     end
+  end
+  return el
+end
+
+function Div(el)
+  -- Backward compatibility: a standalone `::: {.ending-slide} :::` div is
+  -- no longer required, but if present we drop it silently in both formats.
+  if el.classes:includes("ending-slide") then
+    return {}
   end
   return el
 end

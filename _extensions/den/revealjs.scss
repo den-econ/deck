@@ -244,7 +244,15 @@ body:has(#title-slide.present) .slide-number {
   justify-content: center;
   align-items: center;
 
-  h2,
+  h2 {
+    color: $den-white;
+    font-size: 2.4em;
+    font-weight: 700;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+    text-align: center;
+    justify-content: center;
+  }
+
   h3,
   p {
     color: $den-white;
@@ -265,6 +273,36 @@ body:has(#title-slide.present) .slide-number {
 
 /* Global rule to hide logo on ending slide */
 body:has(.ending-slide.present) .slide-logo {
+  display: none !important;
+}
+
+/* === Section Divider === */
+/* Full-page background image with a middle-left white title.
+   Used via `## Title {.section-divider background-image="divider.png"}`. */
+.reveal .slides section.section-divider {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 6%;
+
+  h2 {
+    color: $den-white;
+    font-size: 2.2em;
+    font-weight: 700;
+    text-align: left;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+    max-width: 60%;
+    justify-content: flex-start;
+  }
+
+  h2::before {
+    display: none !important;
+  }
+}
+
+/* Hide logo on section divider */
+body:has(.section-divider.present) .slide-logo {
   display: none !important;
 }
 

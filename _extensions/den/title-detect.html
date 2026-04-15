@@ -42,11 +42,12 @@ function updateLogoVisibility() {
   const currentSlide = document.querySelector('.slides section.present');
   if (!currentSlide) return;
   
-  // Hide logo on title slide and ending slide
+  // Hide logo on title slide, ending slide, and section divider
   const isTitleSlide = currentSlide.id === 'title-slide';
   const isEndingSlide = currentSlide.classList.contains('ending-slide');
-  
-  if (isTitleSlide || isEndingSlide) {
+  const isSectionDivider = currentSlide.classList.contains('section-divider');
+
+  if (isTitleSlide || isEndingSlide || isSectionDivider) {
     logo.style.display = 'none';
   } else {
     logo.style.display = 'block';

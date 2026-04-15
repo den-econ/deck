@@ -6,8 +6,8 @@
 <script src="template_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="template_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="template_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="template_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.8.26">
+<link href="template_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.27">
 
   <meta name="dcterms.date" content="2026-02-04">
   <title>Your Presentation Title</title>
@@ -29,7 +29,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="template_files/libs/revealjs/dist/theme/quarto-e52d55d3fff1840185b25c6db048867c.css">
+  <link rel="stylesheet" href="template_files/libs/revealjs/dist/theme/quarto-bb601ecac73c6f8a13e55b1aae55eb22.css">
   <link rel="stylesheet" href="_extensions/den/revealjs.scss">
   <link href="template_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="template_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -156,6 +156,9 @@
 <li>Fifth point for comparison</li>
 </ul>
 </section>
+<section id="bagian-2-analisis" class="slide level2 section-divider" data-background-image="title.png">
+<h2>Bagian 2: Analisis</h2>
+</section>
 <section id="dense-content" class="slide level2 smaller">
 <h2>Dense Content</h2>
 <p>This slide uses the smaller class for very dense content:</p>
@@ -198,8 +201,17 @@
 </tbody>
 </table>
 </section>
-<section id="section" class="slide level2 ending-slide" data-background-image="end.png" data-background-size="cover">
-<h2></h2>
+<section id="terima-kasih" class="slide level2 ending-slide" data-background-image="end.png" data-background-size="cover">
+<h2>Terima kasih</h2>
+</section>
+<section id="lampiran-catatan-tambahan" class="slide level2">
+<h2>Lampiran: Catatan Tambahan</h2>
+<p>The ending slide is now a reusable environment, so you can place an appendix after it without breaking the layout.</p>
+<ul>
+<li>Catatan metodologi</li>
+<li>Sumber data</li>
+<li>Kontak: <code>author@example.org</code></li>
+</ul>
 
 </section>
     </div>
@@ -506,15 +518,17 @@
 
       
 
-      // Hide logo on title slide and ending slide
+      // Hide logo on title slide, ending slide, and section divider
 
       const isTitleSlide = currentSlide.id === 'title-slide';
 
       const isEndingSlide = currentSlide.classList.contains('ending-slide');
 
-      
+      const isSectionDivider = currentSlide.classList.contains('section-divider');
 
-      if (isTitleSlide || isEndingSlide) {
+    
+
+      if (isTitleSlide || isEndingSlide || isSectionDivider) {
 
         logo.style.display = 'none';
 

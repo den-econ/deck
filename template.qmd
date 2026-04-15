@@ -26,6 +26,8 @@ Here are some bullet points:
 - Fourth point to show smaller text
 - Fifth point for comparison
 
+## Bagian 2: Analisis {.section-divider background-image="title.png"}
+
 ## Dense Content {.smaller}
 
 This slide uses the smaller class for very dense content:
@@ -46,7 +48,13 @@ This slide uses the smaller class for very dense content:
 | Item B   | 200   | -5%    |
 | Item C   | 150   | +3%    |
 
-## {.ending-slide background-image="end.png" background-size="cover"}
+## Terima kasih {.ending-slide background-image="end.png" background-size="cover"}
 
-::: {.ending-slide}
-:::
+## Lampiran: Catatan Tambahan
+
+The ending slide is now a reusable environment, so you can place an appendix
+after it without breaking the layout.
+
+- Catatan metodologi
+- Sumber data
+- Kontak: `author@example.org`
