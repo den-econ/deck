@@ -9,6 +9,11 @@
 \usepackage{graphicx}
 \usepackage{calc}
 
+% Preserve aspect ratio on all \includegraphics by default. fig-height.lua sets
+% a per-image height=0.65\textheight; without this, supplying both width and
+% height would distort the image.
+\setkeys{Gin}{keepaspectratio=true}
+
 % === Beamer Theme Settings ===
 \usetheme{default}
 \usecolortheme{default}
@@ -41,7 +46,7 @@
 \setbeamertemplate{title page}{
   \begin{tikzpicture}[remember picture, overlay]
     \node[anchor=center] at (current page.center) {
-      \includegraphics[width=\paperwidth, height=\paperheight]{title.png}
+      \includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{title.png}
     };
   \end{tikzpicture}
   % Calculate title width to determine if it's long
@@ -150,7 +155,7 @@
   \begin{frame}[plain]
     \begin{tikzpicture}[remember picture, overlay]
       \node[anchor=center] at (current page.center) {
-        \includegraphics[width=\paperwidth, height=\paperheight]{end.png}
+        \includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{end.png}
       };
     \end{tikzpicture}
   \end{frame}
@@ -162,7 +167,7 @@
   \setbeamertemplate{background}{%
     \begin{tikzpicture}[remember picture, overlay]
       \node[anchor=center] at (current page.center) {
-        \includegraphics[width=\paperwidth, height=\paperheight]{#1}
+        \includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{#1}
       };
     \end{tikzpicture}
   }%

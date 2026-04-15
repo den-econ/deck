@@ -27,6 +27,7 @@ contributes:
       filters:
         - ending-slide.lua
         - small-slide.lua
+        - fig-height.lua
       format-resources:
         - title.png
         - end.png

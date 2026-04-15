@@ -23,7 +23,7 @@ function Div(el)
 \begin{frame}[plain]
 \begin{tikzpicture}[remember picture, overlay]
 \node[anchor=center] at (current page.center) {
-\includegraphics[width=\paperwidth, height=\paperheight]{%s}
+\includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{%s}
 };
 \end{tikzpicture}
 ]], bg_image))
