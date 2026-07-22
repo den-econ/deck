@@ -51,9 +51,9 @@ Your content here.
 
 use class {.small} or {.smaller} for a slide with a heavily worded content.
 
-## Bagian 2: Analisis {.section-divider background-image="title.png"}
+## Bagian 2: Analisis {.section-divider background-image="title.jpg"}
 
-## Terima kasih {.ending-slide background-image="end.png" background-size="cover"}
+## Terima kasih {.ending-slide background-image="end.jpg" background-size="cover"}
 
 ## Lampiran
 
@@ -65,17 +65,17 @@ Konten tambahan setelah slide penutup.
 Gunakan `{.section-divider}` pada header H2 untuk membuat slide pembatas bagian. Teks header akan ditampilkan di tengah-kiri dengan warna putih di atas gambar latar.
 
 ```markdown
-## Bagian 3: Hasil {.section-divider background-image="title.png"}
+## Bagian 3: Hasil {.section-divider background-image="title.jpg"}
 ```
 
-Atribut `background-image` opsional (default `title.png`). Anda dapat menyediakan gambar sendiri (misalnya `divider.png`) di folder yang sama dengan `.qmd` Anda.
+Atribut `background-image` opsional (default `title.jpg`). Anda dapat menyediakan gambar sendiri (misalnya `divider.png`) di folder yang sama dengan `.qmd` Anda.
 
 ### Ending / thank-you slide
 
-Gunakan `{.ending-slide}` pada header H2. Teks header akan ditampilkan di tengah di atas gambar `end.png`, sehingga Anda dapat mengubah kata "Thank you" menjadi bahasa apa pun — misalnya "Terima kasih", "Matur nuwun", dst.
+Gunakan `{.ending-slide}` pada header H2. Teks header akan ditampilkan di tengah di atas gambar `end.jpg`, sehingga Anda dapat mengubah kata "Thank you" menjadi bahasa apa pun — misalnya "Terima kasih", "Matur nuwun", dst.
 
 ```markdown
-## Terima kasih {.ending-slide background-image="end.png" background-size="cover"}
+## Terima kasih {.ending-slide background-image="end.jpg" background-size="cover"}
 ```
 
 Jika header dibiarkan kosong (`## {.ending-slide ...}`), teks default adalah "Thank you".

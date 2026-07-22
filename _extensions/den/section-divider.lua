@@ -8,7 +8,7 @@ function Header(el)
   if el.level == 2 and el.classes:includes("section-divider") then
     if FORMAT:match("beamer") or FORMAT:match("latex") then
       local title = pandoc.utils.stringify(el.content)
-      local bg_image = el.attributes["background-image"] or "title.png"
+      local bg_image = el.attributes["background-image"] or "title.jpg"
       return pandoc.RawBlock("latex", string.format([[
 \end{frame}
 \begin{frame}[plain]

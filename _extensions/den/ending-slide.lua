@@ -1,5 +1,5 @@
 -- Lua filter to handle ending slide for beamer and revealjs
--- Syntax: `## Thank you {.ending-slide background-image="end.png" background-size="cover"}`
+-- Syntax: `## Thank you {.ending-slide background-image="end.jpg" background-size="cover"}`
 -- The heading text is rendered over the background image. If the heading is
 -- empty, it defaults to "Thank you" (user can write "Terima kasih", etc.).
 -- For backward compatibility, an empty `::: {.ending-slide} :::` div after
@@ -11,7 +11,7 @@ function Header(el)
     if text == "" then text = "Thank you" end
 
     if FORMAT:match("beamer") or FORMAT:match("latex") then
-      local bg_image = el.attributes["background-image"] or "end.png"
+      local bg_image = el.attributes["background-image"] or "end.jpg"
       return pandoc.RawBlock("latex", string.format([[
 \end{frame}
 \begin{frame}[plain]
