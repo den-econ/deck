@@ -48,7 +48,7 @@ This slide uses the smaller class for very dense content:
 | Item B   | 200   | -5%    |
 | Item C   | 150   | +3%    |
 
-## Terima kasih {.ending-slide background-image="end.jpg" background-size="cover"}
+## Terima kasih {.ending-slide}
 
 ## Lampiran: Catatan Tambahan
 

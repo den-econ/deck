@@ -339,4 +339,4 @@ Gambar di dalam card mengikuti lebar dan tinggi card.
 
 ::::
 
-## Terima kasih {.ending-slide background-image="end.jpg" background-size="cover"}
+## Terima kasih {.ending-slide}

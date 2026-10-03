@@ -53,7 +53,7 @@ use class {.small} or {.smaller} for a slide with a heavily worded content.
 
 ## Bagian 2: Analisis {.section-divider background-image="title.jpg"}
 
-## Terima kasih {.ending-slide background-image="end.jpg" background-size="cover"}
+## Terima kasih {.ending-slide}
 
 ## Lampiran
 
@@ -72,13 +72,15 @@ Atribut `background-image` opsional (default `title.jpg`). Anda dapat menyediaka
 
 ### Ending / thank-you slide
 
-Gunakan `{.ending-slide}` pada header H2. Teks header akan ditampilkan di tengah di atas gambar `end.jpg`, sehingga Anda dapat mengubah kata "Thank you" menjadi bahasa apa pun — misalnya "Terima kasih", "Matur nuwun", dst.
+Gunakan `{.ending-slide}` pada header H2. Teks header ditampilkan berwarna cokelat di tengah gambar `end.jpg`, sehingga Anda dapat memakai bahasa apa pun, misalnya "Terima kasih" atau "Matur nuwun".
 
 ```markdown
-## Terima kasih {.ending-slide background-image="end.jpg" background-size="cover"}
+## Terima kasih {.ending-slide}
 ```
 
-Jika header dibiarkan kosong (`## {.ending-slide ...}`), teks default adalah "Thank you".
+Jika header dibiarkan kosong (`## {.ending-slide}`), teks default adalah "Thank you".
+
+Gambar lain bisa dipakai lewat `background-image="..."`. `end.jpg` dibangun oleh `tools/make-end.py` dari `title.jpg` dan lapisan kabut `Picture1.png`.
 
 > **Catatan:** ending slide sekarang adalah _environment_ yang bisa dipanggil kapan saja — Anda boleh meletakkan slide lampiran setelahnya. Sintaks lama dengan `::: {.ending-slide} :::` div di bawah header masih didukung tetapi tidak lagi diperlukan.
 
