@@ -92,6 +92,39 @@ Pesan utama slide, paling banyak dua baris.
 :::
 ```
 
+### Grid slot dan card
+
+`:::: {.cols n=N}` menata div di dalamnya menjadi N kolom sama lebar, baris demi baris. Tiap div adalah satu slot: `.card` (kotak krem, dengan `title="..."` untuk bilah judul cokelat; tambah `.gold` atau `.dark` untuk warna lain) atau `.plain` (tanpa kotak, untuk gambar atau teks biasa). Slot dengan `.wide` mengambil satu baris penuh. Berlaku di Beamer dan Reveal.js.
+
+```markdown
+:::: {.cols n=3}
+
+::: {.card title="1 Kritikalitas"}
+Fungsi esensial apa yang berhenti?
+:::
+
+::: {.card .gold title="2 Kapasitas"}
+Bisakah produksi ditingkatkan?
+:::
+
+::: {.plain}
+![](gambar.png)
+:::
+
+::::
+```
+
+| Layout | Penulisan |
+|:--|:--|
+| 2 kolom | `{.cols}` dengan 2 slot |
+| 2 kolom + 1 baris | `{.cols}`, slot terakhir `.wide` |
+| 2 × 2, baris bawah pendek | `{.cols rows="2,1"}` dengan 4 slot |
+| 3 × 2 | `{.cols n=3}` dengan 6 slot |
+| 6 kolom + 1 baris | `{.cols n=6 rows="2,1"}`, slot ke-7 `.wide` |
+| 4 × 2 | `{.cols n=4}` dengan 8 slot |
+
+`rows="2,1"` mengatur perbandingan tinggi baris; `height="80%"` mengatur bagian badan slide yang dipakai grid (default 80%). Tinggi baris tetap, sehingga card dalam satu baris sama tinggi dan gambar di dalam slot diperkecil agar muat. Ukuran huruf ditentukan oleh N. Jangan memakai `###` di dalam slot. Output Beamer memerlukan paket LaTeX `tcolorbox`.
+
 ### Gambar
 
 Gunakan slot agar gambar tidak mendorong isi keluar slide (khusus Beamer):

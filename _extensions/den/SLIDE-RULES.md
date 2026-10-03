@@ -5,12 +5,13 @@ Read this before writing or editing a `.qmd` that renders with `den-beamer`.
 
 ## What this format is for
 
-Use den-beamer for technical decks: equations, regression tables, figures
-made in code. A slide is a title plus one of: bullets, an equation with its
-definitions, one table, or one figure.
+Use den-beamer for DEN decks rendered to PDF: equations, regression tables,
+figures made in code, and framework slides built from cards. A slide is a
+title plus one of: bullets, an equation with its definitions, one table, one
+figure, or one slot grid (`.cols`).
 
-Do not build card layouts (rows of coloured boxes, icon tiles, 2x2 grids of
-panels). If a slide needs cards, the deck belongs in pptx, not here.
+Build card layouts only with the `.cols` grid below. Never hand-roll boxes
+with raw LaTeX, `###` headings or beamer blocks.
 
 ## Content budgets
 
@@ -25,8 +26,59 @@ a budget, split the slide. Never shrink text to make it fit.
 | Table, one-line cells | 6 body rows, 5 columns |
 | Table, multi-line cells | 4 body rows, 4 columns, on a `{.smaller}` slide |
 | Figure | One per slide, plus one line of explanation and source |
-| Columns | Two at most, widths summing to 100% or less |
+| Columns (`.columns`) | Two at most, widths summing to 100% or less |
+| Slot grid (`.cols`) | See "Slot grid and cards" below |
 | Takeaway | One per slide, 2 lines |
+
+## Slot grid and cards
+
+`:::: {.cols n=N}` lays its child divs out in N equal columns, row by row.
+Each child is a slot, and a slot is one of:
+
+- `::: {.card title="Judul"}`: cream box with a brown title bar. Add `.gold`
+  or `.dark` for a gold or dark-brown bar. Without `title`, a plain cream box.
+- `::: {.plain}`: no box. Use it for a figure or for text that should sit on
+  the slide background. Not every slot has to be a card.
+
+A slot with `.wide` takes a full row. `rows="2,1"` sets relative row heights
+(default: 1 per row, 0.5 for a `.wide` row). `height="80%"` is the share of
+the slide body the grid fills (default 80%, which leaves room for one
+takeaway; use up to 100% when the grid is alone on the slide).
+
+Row heights are fixed, so cards in a row are equally tall, and a figure in a
+slot is scaled to fit it. Text size is set by N and cannot be changed.
+
+| Layout | Markup | Text size | Budget per card |
+|:--|:--|:--|:--|
+| 2 columns | `{.cols}` with 2 slots | 10pt | title + 3 bullets or 30 words |
+| 2 columns + 1 row | `{.cols}`, last slot `.wide` | 10pt | 20 words; wide row 1 to 2 lines |
+| 2 x 2, short bottom row | `{.cols rows="2,1"}` with 4 slots | 10pt | top 3 bullets; bottom 1 line |
+| 3 x 2 | `{.cols n=3}` with 6 slots | 9pt | title + 10 words |
+| 6 columns + 1 row | `{.cols n=6 rows="2,1"}`, 7th slot `.wide` | 8pt | title of 1 word + 6 words; wide row 1 line |
+| 4 x 2 | `{.cols n=4}` with 8 slots | 8pt | title + 8 words |
+
+Slot sizes at the default height, for drawing figures at their final size:
+
+| Layout | Slot width | Row height |
+|:--|:--|:--|
+| N = 2 | 6.9 cm (2.7 in) | 5.2 cm for one row; 2.5 cm each for two equal rows |
+| N = 3 | 4.5 cm (1.8 in) | as above |
+| N = 4 | 3.3 cm (1.3 in) | as above |
+| N = 6 | 2.1 cm (0.8 in) | as above |
+| With a `.wide` row or `rows="2,1"` | | 3.3 cm top, 1.7 cm bottom |
+
+A titled card loses about 1 cm of that height to its title bar and padding.
+
+Rules for cards:
+
+- One `.cols` grid per slide, with at most one takeaway below it.
+- Use the three title colours to group cards (for example one colour per
+  stage), not for decoration. A card without a title has no colour.
+- A figure goes in a `.plain` slot unless it needs a title bar.
+- A slot holds one figure or text, not both.
+- No `###` headings inside a slot: in revealjs they become separate slides.
+- If the text does not fit its card, cut the text. Do not raise `height`
+  beyond 100% or drop to a denser layout to gain room.
 
 ## Components
 
@@ -48,7 +100,8 @@ a budget, split the slide. Never shrink text to make it fit.
 - `\scriptsize`, `\tiny`, `\fontsize`, or any manual font size.
 - Negative `\vspace`, and `\vspace` used to make content fit.
 - `\renewcommand{\arraystretch}` and custom box macros in `header-includes`.
-- `###` headings inside columns to fake boxes.
+- `###` headings inside columns to fake boxes; use `.cols` and `.card`.
+- Raw `tcolorbox`, `\colorbox` or beamer `block` environments.
 
 ## Mandatory check before finishing
 

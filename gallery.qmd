@@ -130,4 +130,213 @@ Gunakan `.fig-full` bila gambar adalah isi slide, `.fig-half` bila gambar berbag
 
 ::::
 
+## Card: dua kolom
+
+:::: {.cols height="60%"}
+
+::: {.card title="Skrining"}
+- Konsentrasi pemasok dari data perdagangan.
+- Menghasilkan daftar pendek kerentanan.
+:::
+
+::: {.card .gold title="Penilaian"}
+- Kritikalitas dan substitusi aktual.
+- Menghasilkan peringkat risiko.
+:::
+
+::::
+
+::: {.takeaway}
+Tiap slot boleh berisi card, teks biasa, atau gambar.
+:::
+
+## Card: dua kolom dan satu baris
+
+:::: {.cols}
+
+::: {.card title="EXVI"}
+Skor kontinu 0 sampai 1: risiko ketergantungan dan posisi global yang lemah.
+:::
+
+::: {.card .gold title="PC"}
+Uji biner: pemasok di atas 80%, pangsa global di atas 50%, sumber yang sama.
+:::
+
+::: {.card .wide}
+Keluaran: daftar pendek kerentanan berbasis perdagangan, belum menjadi daftar produk kritis.
+:::
+
+::::
+
+## Card: 2 × 2, baris bawah pendek
+
+:::: {.cols rows="2,1"}
+
+::: {.card title="Klasifikasi risiko"}
+- Tier 0: konsentrasi komersial normal.
+- Tier 1: konsentrasi sumber.
+- Tier 2: ketergantungan kritis terkelola.
+:::
+
+::: {.card .gold title="Tangga kebijakan"}
+- Pantau dan ungkap.
+- Diversifikasi komersial.
+- Siapkan kontingensi.
+:::
+
+::: {.card}
+Input: peringkat EXVI dan tanda PC.
+:::
+
+::: {.card}
+Keluaran: instrumen berbiaya terendah.
+:::
+
+::::
+
+## Card: 3 × 2
+
+:::: {.cols n=3}
+
+::: {.card title="1 Kritikalitas"}
+Fungsi esensial apa yang berhenti?
+:::
+
+::: {.card .gold title="2 Kapasitas domestik"}
+Bisakah produksi ditingkatkan?
+:::
+
+::: {.card .dark title="3 Substitusi"}
+Adakah pemasok lain yang kompatibel?
+:::
+
+::: {.card title="4 Penyangga"}
+Berapa lama stok bertahan?
+:::
+
+::: {.card .gold title="5 Probabilitas"}
+Kontrol ekspor, konflik, iklim.
+:::
+
+::: {.card .dark title="6 Validasi"}
+Apakah guncangan lalu menekan output?
+:::
+
+::::
+
+## Card: enam kolom dan satu baris
+
+:::: {.cols n=6 rows="2,1" height="70%"}
+
+::: {.card title="0 Material"}
+Nilai dan volume dagang.
+:::
+
+::: {.card title="1 Konsentrasi"}
+HHI dan Top-1.
+:::
+
+::: {.card title="2 Rasio"}
+Impor terhadap ekspor.
+:::
+
+::: {.card .gold title="3 Posisi"}
+RCD dan harga.
+:::
+
+::: {.card .gold title="4 Substitusi"}
+HHI global.
+:::
+
+::: {.card .gold title="5 Persisten"}
+Dua dari tiga tahun.
+:::
+
+::: {.card .wide .dark title="Tahap berikutnya"}
+Kritikalitas, produksi domestik, substitusi aktual, persediaan, waktu pemulihan, dan probabilitas gangguan.
+:::
+
+::::
+
+## Card: 4 × 2
+
+:::: {.cols n=4}
+
+::: {.card title="Komisi Eropa"}
+Tiga kriteria kumulatif.
+:::
+
+::: {.card title="CEPII"}
+Kriteria UE tiap tahun.
+:::
+
+::: {.card title="OECD"}
+Konsentrasi impor dan ekspor.
+:::
+
+::: {.card title="IMF"}
+Sentralitas jaringan.
+:::
+
+::: {.card .gold title="Bank of England"}
+Eksposur tersembunyi.
+:::
+
+::: {.card .gold title="Australia PC"}
+Uji tiga saringan.
+:::
+
+::: {.card .gold title="Jepang"}
+Penetapan kualitatif.
+:::
+
+::: {.card .gold title="EXVI"}
+Indeks kontinu 0 sampai 1.
+:::
+
+::::
+
+## Gambar di dalam slot
+
+:::: {.cols}
+
+::: {.plain}
+```{python}
+#| fig-width: 2.7
+#| fig-height: 1.3
+fig, ax = plt.subplots(figsize=(2.7, 1.3))
+for (name, values), colour in zip(series.items(), [den.BROWN, den.GOLD]):
+    ax.plot(years, values, label=name, color=colour)
+ax.set_xlabel("Tahun")
+ax.legend(frameon=False)
+fig.tight_layout()
+plt.show()
+```
+:::
+
+::: {.card title="Cara membaca"}
+- Garis: indeks dua seri (sumbu-y) per tahun (sumbu-x).
+- Sumber: angka ilustrasi.
+:::
+
+::: {.plain .wide}
+Slot `.plain` memuat gambar tanpa kotak; gambar diperkecil agar muat di slot.
+:::
+
+::::
+
+## Gambar di dalam card
+
+:::: {.cols}
+
+::: {.card title="Gambar dari berkas"}
+![](logo.png)
+:::
+
+::: {.card .gold title="Catatan"}
+Gambar di dalam card mengikuti lebar dan tinggi card.
+:::
+
+::::
+
 ## Terima kasih {.ending-slide background-image="end.jpg" background-size="cover"}

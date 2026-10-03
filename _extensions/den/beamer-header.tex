@@ -204,6 +204,38 @@
   \end{beamercolorbox}\par
 }
 
+% === Slot Grid and Cards ===
+% Used by cols.lua for `:::: {.cols n=3}`. Each slot is typeset into one of
+% the \denslotA..L boxes at a fixed width and height, then the boxes are set
+% out row by row. dencard is a cream box; dencardtitle adds a coloured title
+% bar; denplain is an invisible box for text or a figure.
+\definecolor{dengold}{HTML}{C8860D}
+\definecolor{dendarkbrown}{HTML}{3D2B1F}
+\definecolor{dencream}{HTML}{F2EBDD}
+\definecolor{denline}{HTML}{DDD0B8}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+\tcbset{
+  denslot/.style={
+    nobeforeafter, valign=top, halign=flush left,
+    before upper={\setlength{\parskip}{0.35em}\setlength{\leftmargini}{1.1em}},
+  },
+  dencard/.style={
+    denslot, colback=dencream, colframe=denline, coltext=dendark,
+    boxrule=0.4pt, arc=1.5pt, boxsep=0pt,
+    left=5pt, right=5pt, top=4pt, bottom=4pt,
+  },
+  dencardtitle/.style={
+    colframe=#1, colbacktitle=#1, coltitle=white,
+    toptitle=1pt, bottomtitle=1pt,
+  },
+  denplain/.style={denslot, blanker},
+}
+\newsavebox{\denslotA}\newsavebox{\denslotB}\newsavebox{\denslotC}\newsavebox{\denslotD}
+\newsavebox{\denslotE}\newsavebox{\denslotF}\newsavebox{\denslotG}\newsavebox{\denslotH}
+\newsavebox{\denslotI}\newsavebox{\denslotJ}\newsavebox{\denslotK}\newsavebox{\denslotL}
+
 % === Columns Stay Inside the Text Width ===
 % Pandoc writes \begin{columns}[T], which lets beamer spread the columns into
 % both side margins. Adding onlytextwidth keeps them aligned with the text.

@@ -346,6 +346,100 @@ body:has(.section-divider.present) .slide-logo {
   padding: 8px 15px;
 }
 
+/* === Slot Grid and Cards === */
+/* Use :::: {.cols n=3} with child divs .card or .plain; see cols.lua */
+$den-gold: #C8860D;
+$den-dark-brown: #3D2B1F;
+$den-cream: #F2EBDD;
+$den-line: #DDD0B8;
+
+.reveal .cols {
+  display: grid;
+  grid-template-columns: repeat(var(--n, 2), 1fr);
+  gap: 12px;
+  text-align: left;
+
+  > div {
+    min-width: 0;
+    min-height: 0;
+  }
+
+  > .wide {
+    grid-column: 1 / -1;
+  }
+
+  &.n2 { font-size: 0.8em; }
+  &.n3 { font-size: 0.65em; }
+  &.n4 { font-size: 0.55em; }
+  &.n6 { font-size: 0.5em; }
+
+  p, ul, ol {
+    margin: 0 0 0.35em 0;
+  }
+
+  ul, ol {
+    padding-left: 1.1em;
+  }
+
+  .fig:not(.titled) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fig {
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      margin: 0;
+    }
+  }
+}
+
+.reveal .card {
+  background: $den-cream;
+  border: 1px solid $den-line;
+  border-radius: 4px;
+  padding: 0.45em 0.6em;
+
+  &.titled {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border-color: $den-brown;
+
+    .card-title {
+      background: $den-brown;
+      color: $den-white;
+      font-weight: bold;
+      padding: 0.3em 0.6em;
+    }
+
+    .card-body {
+      flex: 1;
+      min-height: 0;
+      padding: 0.45em 0.6em;
+    }
+
+    &.fig .card-body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &.gold {
+      border-color: $den-gold;
+      .card-title { background: $den-gold; }
+    }
+
+    &.dark {
+      border-color: $den-dark-brown;
+      .card-title { background: $den-dark-brown; }
+    }
+  }
+}
+
 /* === Takeaway Box === */
 /* Use ::: {.takeaway} for the single message of a slide */
 .reveal .takeaway {
