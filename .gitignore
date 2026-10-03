@@ -1,0 +1,4 @@
+/.quarto/
+**/*.quarto_ipynb
+gallery_files/
+*_check/

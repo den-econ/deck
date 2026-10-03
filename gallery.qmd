@@ -1,0 +1,133 @@
+---
+title: "Galeri komponen den-beamer"
+date: "3 October 2026"
+date-format: "DD MMMM YYYY"
+layout: publish
+author:
+  - name: "Krisna Gupta"
+    orcid: "0000-0001-8695-0514"
+    affiliations:
+      - name: "Dewan Ekonomi Nasional"
+    email: krisna@dewanekonomi.go.id
+    corresponding: true
+format:
+  den-beamer: default
+jupyter: python3
+execute:
+  echo: false
+---
+
+## Slide teks: ukuran normal
+
+- Paling banyak enam butir, masing-masing paling banyak dua baris.
+- Satu slide membawa satu pesan; judul slide menyatakan pesan itu.
+- Jika isi tidak muat, pecah menjadi dua slide.
+- `.shrink` diabaikan oleh template dan menghasilkan peringatan saat render.
+
+::: {.takeaway}
+Kotak takeaway memuat satu pesan utama slide, paling banyak dua baris.
+:::
+
+## Slide teks: `.small` {.small}
+
+- `.small` memuat sampai delapan butir.
+- Ukuran huruf sama di semua slide `.small`.
+- Kotak takeaway tetap berukuran sama di slide normal, `.small` dan `.smaller`.
+- Gunakan `.smaller` hanya untuk tabel atau persamaan yang padat.
+
+## Persamaan
+
+Model gravitasi yang dilinearkan:
+
+$$
+y_{ij} = \beta_0 + \beta_1 Dist_{ij} + \beta_2 gdp_i + \varepsilon_{ij}
+$$
+
+dengan $y_{ij}$ log ekspor dari negara asal $i$ ke negara tujuan $j$, $Dist_{ij}$ log jarak antara $i$ dan $j$, $gdp_i$ log PDB negara $i$, dan $\varepsilon_{ij}$ galat.
+
+::: {.takeaway}
+Setiap variabel dan parameter didefinisikan tepat di bawah persamaannya.
+:::
+
+## Tabel: sel satu baris
+
+| Variabel | Koefisien | Galat baku | N |
+|:---------|----------:|-----------:|--:|
+| Log jarak | $-1{,}12$ | 0,08 | 4.210 |
+| Log PDB asal | 0,94 | 0,05 | 4.210 |
+| Log PDB tujuan | 0,81 | 0,06 | 4.210 |
+| FTA | 0,27 | 0,11 | 4.210 |
+| Perbatasan bersama | 0,43 | 0,15 | 4.210 |
+
+Sumber: angka ilustrasi.
+
+## Tabel: sel banyak baris {.smaller}
+
++-------------------+------------------------------+---------------+-------------------------------+
+| Dimensi           | Perhitungan utama            | Metode        | Yang diukur                   |
++===================+==============================+===============+===============================+
+| Konsentrasi       | HHI impor; pangsa pemasok    | EXVI + PC     | Apakah impor berasal dari     |
+|                   | terbesar                     |               | sedikit negara?               |
++-------------------+------------------------------+---------------+-------------------------------+
+| Ketergantungan    | Rasio impor terhadap ekspor  | EXVI          | Seberapa lemah kapasitas      |
+|                   |                              |               | ekspor relatif terhadap impor?|
++-------------------+------------------------------+---------------+-------------------------------+
+| Persistensi       | Rata-rata bergulir tiga      | CEPII         | Apakah sinyalnya struktural,  |
+|                   | tahun                        |               | bukan guncangan satu tahun?   |
++-------------------+------------------------------+---------------+-------------------------------+
+
+Sumber: angka ilustrasi.
+
+## Gambar penuh dari code chunk
+
+```{python}
+import fig_den as den
+import matplotlib.pyplot as plt
+import numpy as np
+
+den.style()
+plt.rcParams.update({"font.size": 8, "axes.titlesize": 8, "axes.labelsize": 8,
+                     "xtick.labelsize": 7, "ytick.labelsize": 7, "legend.fontsize": 7})
+
+years = np.arange(2015, 2026)
+series = {"Seri A": 100 * 1.05 ** (years - 2015), "Seri B": 100 * 1.02 ** (years - 2015)}
+
+fig, ax = plt.subplots(figsize=(5.5, 2.2))
+for (name, values), colour in zip(series.items(), [den.BROWN, den.GOLD]):
+    ax.plot(years, values, label=name, color=colour)
+ax.set_xlabel("Tahun")
+ax.set_ylabel("Indeks (2015 = 100)")
+ax.legend(frameon=False)
+fig.tight_layout()
+plt.show()
+```
+
+Garis menunjukkan indeks dua seri ilustrasi (sumbu-y) per tahun (sumbu-x). Sumber: angka ilustrasi.
+
+## Gambar dari berkas: `.fig-half`
+
+![](logo.png){.fig-half}
+
+Slot `.fig-half` menyisakan ruang untuk teks dan kotak takeaway di slide yang sama.
+
+::: {.takeaway}
+Gunakan `.fig-full` bila gambar adalah isi slide, `.fig-half` bila gambar berbagi tempat dengan teks.
+:::
+
+## Gambar dalam kolom
+
+:::: {.columns}
+
+::: {.column width="55%"}
+![](logo.png){.fig-full}
+:::
+
+::: {.column width="45%"}
+- Di dalam kolom, lebar slot mengikuti lebar kolom.
+- Jumlah lebar kolom paling banyak 100%.
+- Paling banyak dua kolom per slide.
+:::
+
+::::
+
+## Terima kasih {.ending-slide background-image="end.jpg" background-size="cover"}

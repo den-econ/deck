@@ -346,6 +346,22 @@ body:has(.section-divider.present) .slide-logo {
   padding: 8px 15px;
 }
 
+/* === Takeaway Box === */
+/* Use ::: {.takeaway} for the single message of a slide */
+.reveal .takeaway {
+  background: $den-brown;
+  color: $den-white;
+  font-weight: bold;
+  font-size: 0.85em;
+  padding: 0.5em 0.8em;
+  border-radius: 6px;
+  margin-top: 0.8em;
+
+  p {
+    margin: 0;
+  }
+}
+
 /* === Slide Size Classes for Heavy Content === */
 /* Use {.small} or {.smaller} on slide headers to reduce font size */
 .reveal .slides section.small {
