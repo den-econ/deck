@@ -66,9 +66,9 @@ function Pandoc(doc)
       if fontsize then
         -- Insert font size command right after the header
         if fontsize == "smaller" then
-          table.insert(new_blocks, pandoc.RawBlock("latex", "\\footnotesize"))
+          table.insert(new_blocks, pandoc.RawBlock("latex", "\\densize{11}"))
         elseif fontsize == "small" then
-          table.insert(new_blocks, pandoc.RawBlock("latex", "\\small"))
+          table.insert(new_blocks, pandoc.RawBlock("latex", "\\densize{12}"))
         end
       end
     end

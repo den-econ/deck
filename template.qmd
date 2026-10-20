@@ -16,6 +16,10 @@ Welcome to your presentation! This template includes:
 - Brown accent line before headings
 - Styled page numbers
 
+::: {.source}
+DEN Economic Lab
+:::
+
 ## Key Points {.small}
 
 Here are some bullet points:
@@ -26,7 +30,7 @@ Here are some bullet points:
 - Fourth point to show smaller text
 - Fifth point for comparison
 
-## Bagian 2: Analisis {.section-divider background-image="title.jpg"}
+## Bagian 2: Analisis {.section-divider}
 
 ## Dense Content {.smaller}
 
@@ -47,6 +51,10 @@ This slide uses the smaller class for very dense content:
 | Item A   | 100   | +10%   |
 | Item B   | 200   | -5%    |
 | Item C   | 150   | +3%    |
+
+::: {.source}
+illustrative numbers
+:::
 
 ## Terima kasih {.ending-slide}
 

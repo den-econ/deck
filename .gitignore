@@ -4,3 +4,6 @@ gallery_files/
 *_check/
 *_check_html/
 __pycache__/
+# Copies Quarto places next to a rendered document (format-resources)
+/Carlito-*.woff
+/divider.jpg

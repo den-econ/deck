@@ -1,12 +1,15 @@
 -- Lua filter: DEN table style for beamer.
--- Sets every header cell in bold brown. Row padding and rule colours are
--- set once in beamer-header.tex, so tables need no per-table markup.
+-- Header cells get a tan fill and bold dark-brown text (\dentablehead), and
+-- every second body row a cream fill (\dentablerow). Row padding and rule
+-- colours are set once in beamer-header.tex, so tables need no markup.
 -- For revealjs the table passes through and CSS handles the styling.
 
-local function style_header_cell(cell)
+local function prefix_cell(cell, command)
   local first = cell.contents[1]
   if first and (first.t == "Plain" or first.t == "Para") then
-    first.content:insert(1, pandoc.RawInline("latex", "\\dentablehead{}"))
+    first.content:insert(1, pandoc.RawInline("latex", command .. "{}"))
+  else
+    cell.contents:insert(1, pandoc.Plain({ pandoc.RawInline("latex", command .. "{}") }))
   end
   return cell
 end
@@ -17,7 +20,16 @@ function Table(el)
   end
   for _, row in ipairs(el.head.rows) do
     for i, cell in ipairs(row.cells) do
-      row.cells[i] = style_header_cell(cell)
+      row.cells[i] = prefix_cell(cell, "\\dentablehead")
+    end
+  end
+  for _, body in ipairs(el.bodies) do
+    for r, row in ipairs(body.body) do
+      if r % 2 == 0 then
+        for i, cell in ipairs(row.cells) do
+          row.cells[i] = prefix_cell(cell, "\\dentablerow")
+        end
+      end
     end
   end
   return el

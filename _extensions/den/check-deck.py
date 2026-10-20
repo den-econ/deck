@@ -22,10 +22,11 @@ from pathlib import Path
 import fitz
 
 CM = 28.35                      # points per centimetre
-SIDE_MARGIN = 0.6 * CM          # text closer to a side edge than this is in the margin
-BOTTOM_MARGIN = 0.25 * CM
-PAGE_NUMBER_BOX = (0.9 * CM, 0.65 * CM)   # width, height of the corner page-number box
-MIN_FONT_PT = 7.0               # \footnotesize is 9pt, \scriptsize 8pt in an 11pt deck
+INCH = 72.0
+SIDE_MARGIN = 0.3 * INCH        # text closer to a side edge than this is in the margin (margins are 0.5in)
+BOTTOM_MARGIN = 0.05 * INCH     # the source line sits 0.13in above the bottom edge
+PAGE_NUMBER_BOX = (1.0 * CM, 1.0 * CM)    # width, height of the corner page-number box
+MIN_FONT_PT = 9.0               # on the 13.333in page the template's smallest text is 10pt
 MIN_FONT_CHARS = 25             # ignore the odd subscript or axis tick
 OVERLAP_SHARE = 0.30            # share of a text line that must lie on a figure
 LINE_OVERLAP_HEIGHT = 0.40     # share of the shorter line's height two lines must share

@@ -1,136 +1,159 @@
 /*-- scss:defaults --*/
 
+/* The canvas is 960 x 540px: the 13.333 x 7.5in PowerPoint page at 72px per
+   inch. Every size in px below is the point size, and every position the
+   inch position x 72, of the DEN PowerPoint master and the beamer output. */
+
 /* === DEN Brand Colors === */
-$den-brown: #6A4A3C;
-$den-dark: #2B2B2B;
-$den-gray: #F2F2F2;
+$den-bar: #7B4A3A;          /* title bar, card headings, bullets */
+$den-header: #4E3B30;       /* default card header */
+$den-dark-brown: #3D2B1F;
+$den-gold: #C8860D;
+$den-amber: #F0A22E;
+$den-rust: #A5644E;
+$den-orange: #C17529;
+$den-tan: #C3986D;
+$den-cream: #FBF3E6;
+$den-page: #90571E;         /* page number box, closing text */
+$den-table-head: #DED2B4;
+$den-table-line: #E3D8C0;
 $den-white: #FFFFFF;
+$den-black: #000000;
+
+$den-body-font: Calibri, "DEN Carlito", Carlito, "Segoe UI", sans-serif;
+$den-head-font: Arial, "Liberation Sans", Arimo, Helvetica, sans-serif;
 
 /* === Reveal.js Variable Overrides === */
 $body-bg: $den-white;
-$body-color: $den-dark;
-$link-color: $den-brown;
-$presentation-heading-color: $den-dark;
-$presentation-heading-font: "Helvetica Neue", "Arial", sans-serif;
-$presentation-font-size-root: 30px;
+$body-color: $den-black;
+$link-color: $den-bar;
+$presentation-heading-color: $den-black;
+$presentation-heading-font: $den-head-font;
+$presentation-font-size-root: 14px;
+$presentation-line-height: 1.2;
 
 /*-- scss:rules --*/
 
 /* === Base Typography === */
 .reveal {
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  color: $den-dark;
+  font-family: $den-body-font;
+  font-size: 14px;
+  color: $den-black;
 }
 
 .reveal h1,
 .reveal h2,
 .reveal h3,
 .reveal h4 {
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  font-weight: 500;
-  color: $den-dark;
+  font-family: $den-head-font;
+  font-weight: 700;
+  color: $den-black;
+  text-transform: none;
+  letter-spacing: normal;
+  text-shadow: none;
 }
 
-/* === Title Slide === */
-#title-slide {
-  text-align: center !important;
-
-  h1.title {
-    color: $den-white;
-    font-size: 1.6em;
-    font-weight: 700;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    position: absolute;
-    bottom: -300px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    margin: 0;
-    padding: 0 40px;
-    box-sizing: border-box;
-    transition: font-size 0.2s ease, bottom 0.2s ease;
-  }
-
-  /* 2-line title: smaller font, move up */
-  &.title-2-lines h1.title {
-    font-size: 1.3em;
-    bottom: -270px;
-  }
-
-  /* 3+ line title: 25% smaller than original, move up more */
-  &.title-3-lines h1.title {
-    font-size: 1.2em;
-    bottom: -220px;
-  }
-
-  /* Hide logo on title slide */
-  .slide-logo {
-    display: none !important;
-  }
-
-  .author {
-    color: $den-white;
-    font-size: 0.9em;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 0;
-    right: 0;
-    text-align: center;
-    margin: 0;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-    line-height: 1.3;
-  }
-
-  .date {
-    color: $den-white;
-    font-size: 0.75em;
-    position: absolute;
-    bottom: -500px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    margin: 0;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-  }
-}
-
-/* Hide page number on title slide */
-#title-slide~.slide-number,
-body:has(#title-slide.present) .slide-number {
-  display: none !important;
-}
-
-/* === Content Slides === */
 .reveal .slides section {
   text-align: left;
 }
 
-/* === Vertical brown line before headings (content slides only) === */
-.reveal .slides section:not(#title-slide) h2 {
-  display: flex;
-  align-items: center;
-  margin-top: 20px;
-  transition: font-size 0.2s ease;
+.reveal p {
+  margin: 0 0 0.5em 0;
+  line-height: 1.2;
 }
 
-.reveal .slides section:not(#title-slide) h2::before {
+/* === Slide frame === */
+/* Every slide is the full canvas; content starts below the title band at
+   1.2in, between 0.5in side margins. */
+.reveal .slides > section,
+.reveal .slides > section > section {
+  height: 540px;
+  box-sizing: border-box;
+  padding: 86px 36px 0 36px;
+}
+
+/* Brown bar at the left of the title band (0.46in, 0.36in; 0.08 x 0.69in) */
+.reveal .slides section.slide:not(#title-slide):not(.section-divider):not(.ending-slide)::before {
   content: "";
-  display: inline-block;
+  position: absolute;
+  left: 33px;
+  top: 26px;
   width: 6px;
-  height: 1.4em;
-  background: $den-brown;
-  margin-right: 15px;
-  flex-shrink: 0;
+  height: 50px;
+  background: $den-bar;
 }
 
-/* === Auto-shrink long headings === */
-.reveal .slides section:not(#title-slide) h2.heading-long {
-  font-size: 0.85em;
+/* Title: Arial Bold 18pt, at most two lines, centred on the bar. Positioned
+   rather than laid out with flex, so spaces around formatted words survive.
+   den-slides.html adds .heading-long when a title needs a third line. */
+.reveal .slides section:not(#title-slide):not(.section-divider):not(.ending-slide) h2 {
+  position: absolute;
+  left: 51px;
+  top: 51px;
+  transform: translateY(-50%);
+  width: 817px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.15;
 }
 
-.reveal .slides section:not(#title-slide) h2.heading-very-long {
-  font-size: 0.75em;
+.reveal .slides section:not(#title-slide):not(.section-divider):not(.ending-slide) h2.heading-long {
+  font-size: 16px;
+}
+
+/* Emblem (top right) and page number (bottom-right 1cm square), added to
+   every content slide by den-slides.html. */
+.reveal .den-logo {
+  position: absolute;
+  top: 18px;
+  right: 10px;
+  width: 68px;
+  height: 68px;
+  margin: 0;
+}
+
+.reveal .den-page {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 28px;
+  height: 28px;
+  background: $den-page;
+  color: $den-white;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 28px;
+  text-align: center;
+}
+
+.reveal .slide-logo,
+.reveal .slide-number {
+  display: none !important;
+}
+
+/* === Source and note lines (source-note.lua) === */
+.reveal .slides section .source,
+.reveal .slides section .note {
+  position: absolute;
+  font-size: 12px;
+  line-height: 1.2;
+
+  p {
+    margin: 0;
+  }
+}
+
+.reveal .slides section .source {
+  right: 36px;
+  bottom: 6px;
+  max-width: 820px;
+  text-align: right;
+}
+
+.reveal .slides section .note {
+  left: 36px;
+  bottom: 24px;
+  width: 871px;
 }
 
 /* === Sub-headings (h3, h4, h5, h6) for content slides === */
@@ -138,319 +161,504 @@ body:has(#title-slide.present) .slide-number {
 .reveal .slides section:not(#title-slide) h4,
 .reveal .slides section:not(#title-slide) h5,
 .reveal .slides section:not(#title-slide) h6 {
-  position: relative;
-  display: block;
-  width: 100%;
-  margin-top: 0.8em;
-  margin-bottom: 0.4em;
-  color: $den-dark;
+  margin: 0.6em 0 0.3em 0;
 }
 
 .reveal .slides section:not(#title-slide) h3 {
-  font-size: 0.9em;
-  font-weight: 600;
-  color: $den-brown;
+  font-size: 16px;
+  color: $den-bar;
 }
 
 .reveal .slides section:not(#title-slide) h4 {
-  font-size: 0.8em;
-  font-weight: 600;
+  font-size: 14px;
 }
 
-.reveal .slides section:not(#title-slide) h5 {
-  font-size: 0.75em;
-  font-weight: 500;
-}
-
+.reveal .slides section:not(#title-slide) h5,
 .reveal .slides section:not(#title-slide) h6 {
-  font-size: 0.7em;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   font-style: italic;
 }
 
-/* === Block containers (callout boxes) === */
-.reveal .slides section .block {
-  position: relative;
-  display: block;
-  width: 100%;
-  background: rgba($den-gray, 0.5);
-  border-left: 4px solid $den-brown;
-  padding: 0.8em 1em;
-  margin: 1em 0;
-  box-sizing: border-box;
-
-  h3,
-  h4,
-  h5,
-  h6 {
-    position: relative;
-    display: block;
-    margin-top: 0;
-    margin-bottom: 0.5em;
-    font-size: 0.85em;
-    font-weight: 600;
-    color: $den-brown;
-  }
-
-  p {
-    margin: 0.5em 0;
-  }
-
-  .math {
-    display: block;
-    margin: 0.5em 0;
-  }
-}
-
-/* === Logo at top-right (viewport-relative for consistent sizing) === */
-.reveal .slide-logo {
-  position: fixed !important;
-  top: 1.5vh !important;
-  right: 1.5vw !important;
-  height: 10.5vh !important;
-  max-height: none !important;
-  width: auto !important;
-  z-index: 1000;
-}
-
-/* === Page number block bottom-right corner with brown accent === */
-.reveal .slide-number {
-  background: $den-brown !important;
-  color: $den-white !important;
-  padding: 8px 14px !important;
-  border-radius: 0 !important;
-  font-size: 0.6em !important;
-  font-weight: 600;
-  position: fixed !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  top: auto !important;
-  left: auto !important;
-  width: auto !important;
-  height: auto !important;
-  min-width: 35px !important;
-  max-height: 40px !important;
+/* === Title Slide === */
+/* Emblem and institution name are part of title.jpg (top 2.35in). The title
+   grows upwards from the white rule at 4.09in; subtitle and author run down
+   from 4.3in; the date is centred at 5.33in. den-slides.html adds
+   .title-long when the title needs more than three lines. */
+#title-slide {
+  top: 0 !important;
+  padding: 310px 0 0 0 !important;
   text-align: center !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+
+  h1.title {
+    position: absolute;
+    left: 50%;
+    bottom: 252px;
+    transform: translateX(-50%);
+    width: 554px;
+    margin: 0;
+    color: $den-white;
+    font-size: 24px;
+    line-height: 1.08;
+    text-align: center;
+  }
+
+  &.title-long h1.title {
+    font-size: 20px;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 194px;
+    top: 294px;
+    width: 572px;
+    height: 1.5px;
+    background: $den-white;
+  }
+
+  .subtitle {
+    width: 648px;
+    margin: 0 auto 4px auto;
+    color: $den-white;
+    font-family: $den-head-font;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .quarto-title-authors {
+    display: block;
+    width: 648px;
+    margin: 0 auto;
+    color: $den-white;
+    font-family: $den-head-font;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .quarto-title-author,
+  .quarto-title-author-name {
+    display: inline;
+    margin: 0;
+    padding: 0;
+  }
+
+  .quarto-title-author + .quarto-title-author::before {
+    content: ", ";
+  }
+
+  .quarto-title-author-email,
+  .quarto-title-author-orcid,
+  .quarto-title-affiliation,
+  .quarto-title-affiliations {
+    display: none !important;
+  }
+
+  .date {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 384px;
+    transform: translateY(-50%);
+    margin: 0;
+    color: $den-white;
+    font-family: $den-head-font;
+    font-weight: 700;
+    font-size: 16px;
+  }
 }
 
 /* === Ending Slide === */
-/* Background is set via data-background-image attribute in Quarto for full coverage */
-.reveal .slides section.ending-slide {
-  display: flex !important;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  /* Brown heading centred on the hazy picture */
-  h2 {
-    color: #573611;
-    font-size: 2.4em;
-    font-weight: 700;
-    text-align: center;
-    justify-content: center;
-  }
-
-  h3,
-  p {
-    color: #573611;
-    text-align: center;
-  }
-
-  h2::before {
-    display: none !important;
-  }
-}
-
-/* Hide logo on ending slide */
-.reveal .slides section.ending-slide .slide-logo,
-.ending-slide~.slide-logo {
-  display: none !important;
-}
-
-/* Global rule to hide logo on ending slide */
-body:has(.ending-slide.present) .slide-logo {
-  display: none !important;
+/* end.jpg carries the emblem and institution name; the closing text is
+   centred at 3.96in in Arial Bold 40pt. */
+.reveal .slides section.ending-slide h2 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 285px;
+  transform: translateY(-50%);
+  width: auto;
+  margin: 0;
+  color: $den-page;
+  font-size: 40px;
+  text-align: center;
 }
 
 /* === Section Divider === */
-/* Full-page background image with a middle-left white title.
-   Used via `## Title {.section-divider background-image="divider.png"}`. */
-.reveal .slides section.section-divider {
-  display: flex !important;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  padding-left: 6%;
-
-  h2 {
-    color: $den-white;
-    font-size: 2.2em;
-    font-weight: 700;
-    text-align: left;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
-    max-width: 60%;
-    justify-content: flex-start;
-  }
-
-  h2::before {
-    display: none !important;
-  }
-}
-
-/* Hide logo on section divider */
-body:has(.section-divider.present) .slide-logo {
-  display: none !important;
+/* divider.jpg carries the emblem at top left; the title sits middle left. */
+.reveal .slides section.section-divider h2 {
+  position: absolute;
+  left: 45px;
+  top: 293px;
+  transform: translateY(-50%);
+  width: 338px;
+  margin: 0;
+  color: $den-white;
+  font-size: 20px;
 }
 
 /* === Lists === */
 .reveal ul,
 .reveal ol {
-  margin-left: 1em;
+  display: block;
+  margin: 0 0 0.5em 1.2em;
+  padding: 0;
 }
 
 .reveal li {
-  margin-bottom: 0.5em;
-  line-height: 1.4;
+  margin-bottom: 0.3em;
+  line-height: 1.2;
 }
 
-/* === Blockquotes === */
+.reveal ul li::marker {
+  color: $den-bar;
+}
+
+/* === Blockquotes and code === */
 .reveal blockquote {
-  border-left: 4px solid $den-brown;
-  padding-left: 1em;
+  width: auto;
+  margin: 0.5em 0;
+  border-left: 4px solid $den-bar;
+  padding: 0.3em 0.8em;
   font-style: italic;
-  background: rgba($den-gray, 0.5);
+  background: $den-cream;
+  box-shadow: none;
 }
 
-/* === Code blocks === */
 .reveal pre {
-  border-left: 4px solid $den-brown;
+  border-left: 4px solid $den-bar;
+  font-size: 11px;
 }
 
 /* === Tables === */
+/* Tan header row, cream stripes on every second body row, thin beige rules. */
 .reveal table {
   border-collapse: collapse;
+  font-size: 12px;
+  margin: 0;
 }
 
 .reveal table th {
-  background: $den-brown;
-  color: $den-white;
-  padding: 10px 15px;
+  background: $den-table-head;
+  color: $den-dark-brown;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-top: 1px solid $den-table-line;
+  border-bottom: 1px solid $den-table-line;
 }
 
 .reveal table td {
-  border-bottom: 1px solid $den-gray;
-  padding: 8px 15px;
+  padding: 5px 10px;
+  border-bottom: 1px solid $den-table-line;
+}
+
+.reveal table tbody tr:nth-child(even) td {
+  background: $den-cream;
+}
+
+/* === Figures === */
+/* Figure slots: .fig-full when the figure is the slide, .fig-half when it
+   shares the slide with text or a takeaway. */
+.reveal img.fig-full,
+.reveal .slides section > .cell .cell-output-display img {
+  max-height: 374px;
+  width: auto;
+  max-width: 100%;
+}
+
+.reveal img.fig-half {
+  max-height: 216px;
+}
+
+/* === Takeaway Box === */
+/* Use ::: {.takeaway} for the single message of a slide */
+.reveal .takeaway {
+  background: $den-bar;
+  color: $den-white;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 6px 11px;
+  border-radius: 4px;
+  margin-top: 11px;
+
+  p {
+    margin: 0;
+  }
+
+  li::marker {
+    color: $den-white;
+  }
+
+  code {
+    color: $den-white;
+    background: transparent;
+  }
 }
 
 /* === Slot Grid and Cards === */
-/* Use :::: {.cols n=3} with child divs .card or .plain; see cols.lua */
-$den-gold: #C8860D;
-$den-dark-brown: #3D2B1F;
-$den-cream: #F2EBDD;
-$den-line: #DDD0B8;
-
+/* Use :::: {.cols n=3} with child divs .card, .banner or .plain; see cols.lua.
+   Text and heading sizes are fixed per number of columns. */
 .reveal .cols {
   display: grid;
   grid-template-columns: repeat(var(--n, 2), 1fr);
-  gap: 12px;
+  gap: 11px;
   text-align: left;
+  --head: 14px;
 
   > div {
     min-width: 0;
     min-height: 0;
+    box-sizing: border-box;
   }
 
   > .wide {
     grid-column: 1 / -1;
   }
 
-  &.n2 { font-size: 0.8em; }
-  &.n3 { font-size: 0.65em; }
-  &.n4 { font-size: 0.55em; }
-  &.n6 { font-size: 0.5em; }
+  &.n1 { font-size: 14px; --head: 16px; }
+  &.n2 { font-size: 12px; --head: 14px; }
+  &.n3 { font-size: 12px; --head: 14px; }
+  &.n4 { font-size: 11px; --head: 12px; }
+  &.n6 { font-size: 10px; --head: 11px; }
 
   p, ul, ol {
-    margin: 0 0 0.35em 0;
+    margin: 0 0 0.3em 0;
   }
 
   ul, ol {
     padding-left: 1.1em;
   }
 
-  .fig:not(.titled) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  li {
+    margin-bottom: 0.2em;
+  }
+
+  .card-body {
+    min-height: 0;
+  }
+
+  /* A figure fills the body of its slot, whatever wrappers Quarto puts
+     around it (a code chunk nests the image in several divs). */
+  .fig .card-body,
+  .charted .card-body {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      max-height: none;
+      object-fit: contain;
+      margin: 0;
+    }
+  }
+
+  .card.titled.fig .card-body img {
+    top: 7px;
+    left: 11px;
+    width: calc(100% - 22px);
+    height: calc(100% - 14px);
   }
 
   .fig {
-    img {
-      max-width: 100%;
-      max-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* Colour classes for card headers, filled cards and banners */
+.reveal .cols {
+  /* Defaults through :where() carry no specificity, so a colour class wins */
+  :where(.card) { --c: #{$den-header}; }
+  :where(.card.fill) { --c: #{$den-amber}; }
+  :where(.banner) { --c: #{$den-gold}; }
+  .gold { --c: #{$den-gold}; }
+  .amber { --c: #{$den-amber}; }
+  .rust { --c: #{$den-rust}; }
+  .orange { --c: #{$den-orange}; }
+  .tan { --c: #{$den-tan}; }
+  .brown { --c: #{$den-bar}; }
+  .dark { --c: #{$den-dark-brown}; }
+}
+
+/* Untitled card: cream box with an orange border */
+.reveal .card {
+  position: relative;
+  background: $den-cream;
+  border: 1px solid $den-orange;
+  border-radius: 9px;
+  padding: 7px 11px;
+}
+
+/* Card with a title: coloured header bar over a white body */
+.reveal .card.titled {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: $den-white;
+  border-color: var(--c);
+  border-radius: 6px;
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--c);
+    color: $den-white;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 5px 5px 0 0;
+
+    p {
+      margin: 0;
+    }
+
+    img.card-icon {
+      display: block;
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      margin: 0;
+    }
+  }
+
+  .card-kicker {
+    font-size: calc(1em - 1px);
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .card-title-text {
+    font-size: var(--head);
+    line-height: 1.2;
+  }
+
+  .card-body {
+    flex: 1;
+    padding: 7px 11px;
+  }
+}
+
+/* Soft card: cream box with a brown heading inside and an icon in an orange disc */
+.reveal .card.soft {
+  .card-heading {
+    color: $den-bar;
+    font-weight: 700;
+    font-size: var(--head);
+    line-height: 1.2;
+    margin-bottom: 4px;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  &:has(.card-disc) {
+    padding-left: 68px;
+  }
+
+  .card-disc {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: $den-amber;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    p {
+      margin: 0;
+      line-height: 0;
+    }
+
+    img.card-icon {
+      width: 26px;
+      height: 26px;
       object-fit: contain;
       margin: 0;
     }
   }
 }
 
-.reveal .card {
-  background: $den-cream;
-  border: 1px solid $den-line;
-  border-radius: 4px;
-  padding: 0.45em 0.6em;
+/* Filled card: whole card in one colour, white text */
+.reveal .card.fill {
+  background: var(--c);
+  border: none;
+  color: $den-white;
+  padding: 9px 13px;
 
-  &.titled {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    border-color: $den-brown;
+  .card-heading {
+    font-weight: 700;
+    font-size: var(--head);
+    line-height: 1.2;
+    margin-bottom: 4px;
 
-    .card-title {
-      background: $den-brown;
-      color: $den-white;
-      font-weight: bold;
-      padding: 0.3em 0.6em;
+    p {
+      margin: 0;
     }
 
-    .card-body {
-      flex: 1;
-      min-height: 0;
-      padding: 0.45em 0.6em;
+    img.card-logo {
+      height: 29px;
+      width: auto;
+      margin: 0 7px 0 0;
+      vertical-align: middle;
     }
+  }
 
-    &.fig .card-body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    &.gold {
-      border-color: $den-gold;
-      .card-title { background: $den-gold; }
-    }
-
-    &.dark {
-      border-color: $den-dark-brown;
-      .card-title { background: $den-dark-brown; }
-    }
+  li::marker {
+    color: $den-white;
   }
 }
 
-/* === Takeaway Box === */
-/* Use ::: {.takeaway} for the single message of a slide */
-.reveal .takeaway {
-  background: $den-brown;
+/* Banner: a bar of bold text */
+.reveal .banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c);
   color: $den-white;
-  font-weight: bold;
-  font-size: 0.85em;
-  padding: 0.5em 0.8em;
-  border-radius: 6px;
-  margin-top: 0.8em;
+  font-weight: 700;
+  font-size: calc(var(--head) + 2px);
+  border-radius: 4px;
+  text-align: center;
 
   p {
+    margin: 0;
+  }
+
+  &.dark {
+    background: linear-gradient(to bottom, #B1875C 0%, #5D3913 35%, #5D3913 100%);
+    border-radius: 1px;
+  }
+}
+
+/* Plain slot with a chart heading */
+.reveal .cols .plain.charted {
+  display: flex;
+  flex-direction: column;
+
+  .chart-head {
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .chart-title {
+    font-weight: 700;
+    font-size: var(--head);
+    line-height: 1.2;
+  }
+
+  .chart-head p {
     margin: 0;
   }
 }
@@ -458,35 +666,9 @@ $den-line: #DDD0B8;
 /* === Slide Size Classes for Heavy Content === */
 /* Use {.small} or {.smaller} on slide headers to reduce font size */
 .reveal .slides section.small {
-  font-size: 0.85em;
-
-  h2 {
-    font-size: 1.1em;
-  }
-
-  li {
-    margin-bottom: 0.3em;
-    line-height: 1.3;
-  }
-
-  pre {
-    font-size: 0.9em;
-  }
+  font-size: 12px;
 }
 
 .reveal .slides section.smaller {
-  font-size: 0.7em;
-
-  h2 {
-    font-size: 1.0em;
-  }
-
-  li {
-    margin-bottom: 0.25em;
-    line-height: 1.2;
-  }
-
-  pre {
-    font-size: 0.85em;
-  }
+  font-size: 11px;
 }

@@ -1,175 +1,195 @@
+% === Page ===
+% The PowerPoint widescreen size (13.333 x 7.5 in), so point sizes and
+% positions are those of the DEN PowerPoint master. Positions below are in
+% inches from the top-left corner of the page, as read off the master.
+\geometry{paperwidth=13.333in, paperheight=7.5in}
+\setbeamersize{text margin left=0.5in, text margin right=0.5in}
+
+% === Fonts ===
+% Titles in Arial, text in Calibri, as in the master. Carlito and Arimo are
+% metric-compatible free substitutes for systems without the Microsoft fonts.
+% Scale=1.0 overrides Pandoc's Scale=MatchLowercase, which would shrink
+% Arial to 85% and Calibri to 98% of the point size.
+\usepackage{fontspec}
+\IfFontExistsTF{Calibri}{\setsansfont{Calibri}[Scale=1.0]}{\setsansfont{Carlito}[Scale=1.0]}
+\IfFontExistsTF{Arial}{\newfontfamily\denheadfont{Arial}[Scale=1.0]}{%
+  \IfFontExistsTF{Liberation Sans}{\newfontfamily\denheadfont{Liberation Sans}[Scale=1.0]}{\newfontfamily\denheadfont{Arimo}[Scale=1.0]}}
+\newcommand{\densize}[1]{\fontsize{#1}{\fpeval{1.2*#1}}\selectfont}
+\usefonttheme{professionalfonts}
+% Body text exactly 14pt (beamer's 14pt option gives 14.4pt), so lines wrap
+% as in the HTML output
+\makeatletter
+\renewcommand\normalsize{\@setfontsize\normalsize{14}{16.8}%
+  \abovedisplayskip 12pt plus3pt minus7pt\abovedisplayshortskip\z@ plus3pt
+  \belowdisplayshortskip 6.5pt plus3.5pt minus3pt\belowdisplayskip\abovedisplayskip}
+\makeatother
+\AtBeginDocument{\normalsize}
+% Single space after punctuation, as in PowerPoint
+\frenchspacing
+% Titles break between words, never inside one, and keep the font's natural
+% word space (a TikZ text box otherwise stretches it). Use after the size.
+\newcommand{\dentitlesetup}{\hyphenpenalty=10000\exhyphenpenalty=10000
+  \spaceskip=\fontdimen2\font\xspaceskip=\fontdimen2\font}
+
 % === DEN Brand Colors ===
 \usepackage{xcolor}
-\definecolor{denbrown}{HTML}{6A4A3C}
-\definecolor{dendark}{HTML}{2B2B2B}
+\definecolor{denbar}{HTML}{7B4A3A}       % title bar, card headings, bullets
+\definecolor{denbrown}{HTML}{7B4A3A}     % older name of denbar
+\definecolor{dendark}{HTML}{000000}      % text
+\definecolor{denheader}{HTML}{4E3B30}    % default card header
+\definecolor{dendarkbrown}{HTML}{3D2B1F}
+\definecolor{dengold}{HTML}{C8860D}
+\definecolor{denamber}{HTML}{F0A22E}
+\definecolor{denrust}{HTML}{A5644E}
+\definecolor{denorange}{HTML}{C17529}
+\definecolor{dentan}{HTML}{C3986D}
+\definecolor{dencream}{HTML}{FBF3E6}
+\definecolor{denpage}{HTML}{90571E}      % page number box, closing text
+\definecolor{dentabhead}{HTML}{DED2B4}
+\definecolor{dentabline}{HTML}{E3D8C0}
+\definecolor{denbannertop}{HTML}{B1875C}
+\definecolor{denbannerbottom}{HTML}{5D3913}
 \definecolor{dengray}{HTML}{F2F2F2}
 
 % === Required Packages ===
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{calc}
+\usepackage{ifthen}
 
 % Preserve aspect ratio on all \includegraphics by default. fig-height.lua sets
-% a per-image height=0.65\textheight; without this, supplying both width and
-% height would distort the image.
+% both width and height on figure slots; without this, the image would distort.
 \setkeys{Gin}{keepaspectratio=true}
 
 % === Beamer Theme Settings ===
 \usetheme{default}
 \usecolortheme{default}
-
-% Remove navigation symbols
 \setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
 
-% === Font Settings ===
-\usefonttheme{professionalfonts}
-\setbeamerfont{title}{size=\LARGE, series=\bfseries}
-\setbeamerfont{frametitle}{size=\large, series=\bfseries}
-\setbeamerfont{framesubtitle}{size=\normalsize}
-
-% === Color Settings ===
 \setbeamercolor{normal text}{fg=dendark}
-\setbeamercolor{frametitle}{fg=dendark}
-\setbeamercolor{title}{fg=white}
-\setbeamercolor{author}{fg=white}
-\setbeamercolor{date}{fg=white}
-\setbeamercolor{item}{fg=denbrown}
-\setbeamercolor{itemize item}{fg=denbrown}
-\setbeamercolor{enumerate item}{fg=denbrown}
+\setbeamercolor{frametitle}{fg=black}
+\setbeamercolor{item}{fg=denbar}
+\setbeamercolor{itemize item}{fg=denbar}
+\setbeamercolor{enumerate item}{fg=denbar}
+\setbeamercolor{block title}{bg=denbar, fg=white}
+\setbeamercolor{block body}{bg=dencream, fg=dendark}
 
-% === Adaptive Title Sizing ===
-\usepackage{ifthen}
-\newlength{\titlewidth}
-\newlength{\titlemaxwidth}
-
-% === Title Page Template with Adaptive Sizing ===
-\setbeamertemplate{title page}{
+% === Title Page ===
+% Emblem and institution name are part of title.jpg. Title, rule and date
+% are placed below them: the title grows upwards from the rule, so one to
+% three lines never reach the emblem; subtitle and author sit under the rule.
+\newlength{\dentitlewidth}
+\setbeamertemplate{title page}{%
+  \settowidth{\dentitlewidth}{\denheadfont\bfseries\densize{24}\inserttitle}%
   \begin{tikzpicture}[remember picture, overlay]
-    \node[anchor=center] at (current page.center) {
-      \includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{title.jpg}
-    };
-  \end{tikzpicture}
-  % Calculate title width to determine if it's long
-  \setlength{\titlemaxwidth}{0.80\paperwidth}
-  \settowidth{\titlewidth}{\usebeamerfont{title}\inserttitle}
-  %
-  \ifthenelse{\lengthtest{\titlewidth > \titlemaxwidth}}%
-  {% Long title (3+ lines): 25% smaller font, higher position
-    \vspace{1.8cm}
-    \begin{center}
-      \begin{minipage}{0.85\textwidth}
-        \centering
-        {\fontsize{18}{22}\selectfont\bfseries\color{white}\inserttitle\par}
-        \vspace{0.3cm}
-        {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}
-      \end{minipage}
-    \end{center}
-  }{% Short title (1 line): normal font, normal position
-    \vspace{3cm}
-    \begin{center}
-      \begin{minipage}{0.85\textwidth}
-        \centering
-        {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
-        \vspace{0.3cm}
-        {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}
-      \end{minipage}
-    \end{center}
-  }
-  \vfill
-  \begin{center}
-    {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate}
-  \end{center}
-  \vspace{0.5cm}
+    \node[anchor=north west, inner sep=0pt] at (current page.north west)
+      {\includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{title.jpg}};
+    \node[anchor=south, text width=7.7in, align=center, inner sep=0pt, text=white]
+      at ([yshift=-4.0in]current page.north)
+      {\denheadfont\bfseries
+       \ifdim\dentitlewidth>23.1in\densize{20}\else\densize{24}\fi
+       \dentitlesetup\baselineskip=1.08\baselineskip\inserttitle\par};
+    \draw[white, line width=1.5pt] ([xshift=-3.97in, yshift=-4.09in]current page.north) -- ++(7.94in, 0);
+    \node[anchor=north, text width=9in, align=center, inner sep=0pt, text=white]
+      at ([yshift=-4.3in]current page.north)
+      {{\denheadfont\bfseries\densize{16}\insertsubtitle\par}\vspace{4pt}%
+       {\denheadfont\densize{14}\insertauthor\par}};
+    \node[anchor=center, inner sep=0pt, text=white] at ([yshift=-5.33in]current page.north)
+      {\denheadfont\bfseries\densize{16}\insertdate};
+  \end{tikzpicture}%
 }
+% The author block lists the name only; the institution is on the picture.
+\institute{}
 
-% === Adaptive Frame Title Sizing ===
-\newlength{\frametitlewidth}
-\newlength{\frametitlemaxwidth}
-
-% === Frame Title Template with Vertical Brown Line and Adaptive Sizing ===
-\setbeamertemplate{frametitle}{
-  \vspace{0.4cm}
-  % Calculate frametitle width to determine if it's long
-  \setlength{\frametitlemaxwidth}{0.75\paperwidth}
-  \settowidth{\frametitlewidth}{\usebeamerfont{frametitle}\insertframetitle}
-  %
-  \begin{beamercolorbox}[wd=\paperwidth, leftskip=0.5cm]{frametitle}
-    \tikz[baseline=-0.3ex]{
-      \fill[denbrown] (0, -0.35) rectangle (0.15, 0.55);
-    }
-    \hspace{0.3cm}
-    \ifthenelse{\lengthtest{\frametitlewidth > 1.3\frametitlemaxwidth}}%
-    {% Very long title: use small font
-      {\small\bfseries\insertframetitle}%
-    }{%
-      \ifthenelse{\lengthtest{\frametitlewidth > \frametitlemaxwidth}}%
-      {% Long title: use normalsize font
-        {\normalsize\bfseries\insertframetitle}%
-      }{% Normal title: use standard frametitle font
-        \usebeamerfont{frametitle}\insertframetitle%
-      }%
-    }%
-  \end{beamercolorbox}
-}
-
-% === Logo in Top Right ===
-\addtobeamertemplate{frametitle}{}{
+% === Frame Title ===
+% Brown bar at the left, title in Arial Bold 18pt (16pt when it would need
+% more than two lines), centred vertically on the bar, emblem at top right.
+% The frame title block reserves the band down to 1.2in, where content starts.
+\newlength{\denframetitlewidth}
+\newlength{\denTitleWidth}
+\setlength{\denTitleWidth}{11.35in}
+\setbeamertemplate{frametitle}{%
+  \settowidth{\denframetitlewidth}{\denheadfont\bfseries\densize{18}\insertframetitle}%
   \begin{tikzpicture}[remember picture, overlay]
-    \node[anchor=north east, xshift=-0.4cm, yshift=-0.2cm] at (current page.north east) {
-      \includegraphics[height=1cm]{logo.png}
-    };
-  \end{tikzpicture}
+    \fill[denbar] ([xshift=0.46in, yshift=-0.36in]current page.north west) rectangle ++(0.08in, -0.69in);
+    \node[anchor=west, text width=\denTitleWidth, align=left, inner sep=0pt, text=black]
+      at ([xshift=0.71in, yshift=-0.705in]current page.north west)
+      {\denheadfont\bfseries
+       \ifdim\denframetitlewidth>2\denTitleWidth\densize{16}\else\densize{18}\fi
+       \dentitlesetup\baselineskip=0.95\baselineskip\insertframetitle\par};
+    \node[anchor=north east, inner sep=0pt] at ([xshift=-0.138in, yshift=-0.245in]current page.north east)
+      {\includegraphics[width=0.945in]{logo.png}};
+  \end{tikzpicture}%
+  \vbox to \dimexpr 1.2in - \denTopOffset\relax{}%
 }
+% Distance from the top of the page to the top of the frame body (beamer's
+% head height and skips); calibrated so content starts at 1.2in.
+\newcommand{\denTopOffset}{0.2in}
 
-% === Footer with Page Number (Brown Box Bottom Right Corner) ===
-% Hidden on title slide (frame 1)
+% === Footer: Page Number ===
+% 1 cm brown square in the bottom-right corner, numbered from the first
+% slide after the title. Plain frames (title, dividers, ending) show none.
 \setbeamertemplate{footline}{%
   \ifnum\insertframenumber>1
     \begin{tikzpicture}[remember picture, overlay]
-      \node[
-        anchor=south east, 
-        fill=denbrown, 
-        text=white,
-        inner sep=4pt,
-        minimum width=0.6cm,
-        minimum height=0.5cm,
-        font=\footnotesize
-      ] at (current page.south east) {
-        \the\numexpr\insertframenumber-1\relax
-      };
-    \end{tikzpicture}
+      \node[anchor=south east, fill=denpage, text=white, inner sep=0pt,
+            minimum width=1cm, minimum height=1cm, font=\bfseries\densize{12}]
+        at (current page.south east) {\the\numexpr\insertframenumber-1\relax};
+    \end{tikzpicture}%
   \fi
 }
 
-% === List Item Styling ===
-\setbeamertemplate{itemize item}{\textcolor{denbrown}{\textbullet}}
-\setbeamertemplate{itemize subitem}{\textcolor{denbrown}{\textendash}}
-\setbeamertemplate{enumerate item}{\textcolor{denbrown}{\insertenumlabel.}}
+% === Source and Note ===
+% Used by source-note.lua for `::: {.source}` and `::: {.note}`. The source
+% sits on the bottom line, right-aligned against the page number; the note
+% sits on the line above it, at the left text margin.
+\newcommand{\densource}[2]{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=base east, inner sep=0pt, align=right, font=\densize{12}]
+      at ([xshift=-0.5in, yshift=0.13in]current page.south east) {\textbf{#1:} #2};
+  \end{tikzpicture}%
+}
+\newcommand{\dennote}[2]{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=south west, inner sep=0pt, text width=12.1in, align=left, font=\densize{12}]
+      at ([xshift=0.5in, yshift=0.33in]current page.south west) {\textbf{#1:} #2};
+  \end{tikzpicture}%
+}
 
-% === Block Styling ===
-\setbeamercolor{block title}{bg=denbrown, fg=white}
-\setbeamercolor{block body}{bg=dengray, fg=dendark}
+% === Lists and body text ===
+\setbeamertemplate{itemize item}{\textcolor{denbar}{\textbullet}}
+\setbeamertemplate{itemize subitem}{\textcolor{denbar}{\textendash}}
+\setbeamertemplate{enumerate item}{\textcolor{denbar}{\insertenumlabel.}}
+% Body text is 14pt (the 14pt class option); sub-items stay at 14pt too.
+\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
+\setbeamerfont{itemize/enumerate subsubbody}{size=\normalsize}
 
-% Colour of the closing text on the ending slide (see ending-slide.lua)
-\definecolor{denendtext}{HTML}{573611}
-
-% === Ending Slide Command ===
+% === Ending Slide ===
 \providecommand{\denendslide}{
   \begin{frame}[plain]
     \begin{tikzpicture}[remember picture, overlay]
-      \node[anchor=center] at (current page.center) {
+      \node[anchor=north west, inner sep=0pt] at (current page.north west) {
         \includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{end.jpg}
       };
     \end{tikzpicture}
   \end{frame}
 }
+\newcommand{\denEndingFrame}[2]{%
+  \begin{tikzpicture}[remember picture, overlay]
+    \node[anchor=north west, inner sep=0pt] at (current page.north west)
+      {\includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{#2}};
+    \node[anchor=center, text=denpage, align=center, inner sep=0pt]
+      at ([yshift=-3.96in]current page.north) {\denheadfont\bfseries\densize{40}#1};
+  \end{tikzpicture}%
+}
 
-% === Support for ending-slide class via background-image attribute ===
+% === Support for background-image on any frame ===
 \makeatletter
 \define@key{beamerframe}{background-image}{%
   \setbeamertemplate{background}{%
     \begin{tikzpicture}[remember picture, overlay]
-      \node[anchor=center] at (current page.center) {
+      \node[anchor=north west, inner sep=0pt] at (current page.north west) {
         \includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{#1}
       };
     \end{tikzpicture}
@@ -178,60 +198,85 @@
 \makeatother
 
 % === Section Divider Frame ===
-% Full-page background image with a middle-left white title, used by
-% section-divider.lua for `## Title {.section-divider background-image="..."}`
+% Photo darkened towards the left with the emblem at top left (divider.jpg),
+% white title at the middle left. Used by section-divider.lua.
 \newcommand{\denDividerFrame}[2]{%
   \begin{tikzpicture}[remember picture, overlay]
-    \node[anchor=center] at (current page.center) {
-      \includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{#2}
-    };
-    \node[anchor=west, text=white, align=left, inner sep=0pt,
-          text width=0.55\paperwidth]
-      at ([xshift=1.2cm]current page.west)
-      {\Huge\bfseries #1};
+    \node[anchor=north west, inner sep=0pt] at (current page.north west)
+      {\includegraphics[width=\paperwidth, height=\paperheight, keepaspectratio=false]{#2}};
+    \node[anchor=west, text=white, align=left, inner sep=0pt, text width=4.7in]
+      at ([xshift=0.625in, yshift=-4.07in]current page.north west)
+      {\denheadfont\bfseries\densize{20}#1};
   \end{tikzpicture}%
 }
 
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
 % === Takeaway Box ===
-% Full-text-width brown bar for the single message of a slide, used by
-% takeaway.lua for `::: {.takeaway}`. The font size is fixed so the bar looks
-% the same on normal, .small and .smaller slides.
-\setbeamercolor{dentakeaway}{bg=denbrown, fg=white}
-\newenvironment{dentakeaway}{%
-  \par\vspace{0.6em}%
-  \setbeamertemplate{itemize item}{\textbullet}%
-  \setbeamertemplate{itemize subitem}{\textendash}%
-  \begin{beamercolorbox}[wd=\textwidth, sep=7pt]{dentakeaway}%
-  \small\bfseries
-}{%
-  \end{beamercolorbox}\par
+% Full-text-width bar for the single message of a slide, used by takeaway.lua
+% for `::: {.takeaway}`. Fixed font size, so it looks the same on every slide.
+\newtcolorbox{dentakeaway}{
+  enhanced, colback=denbar, colframe=denbar, coltext=white, boxrule=0pt,
+  arc=0.06in, left=0.15in, right=0.15in, top=0.08in, bottom=0.08in,
+  before skip=0.15in, after skip=0pt,
+  fontupper=\bfseries\densize{14},
+  before upper={\setbeamertemplate{itemize item}{\textbullet}\setbeamertemplate{itemize subitem}{\textendash}},
 }
 
 % === Slot Grid and Cards ===
 % Used by cols.lua for `:::: {.cols n=3}`. Each slot is typeset into one of
 % the \denslotA..L boxes at a fixed width and height, then the boxes are set
-% out row by row. dencard is a cream box; dencardtitle adds a coloured title
-% bar; denplain is an invisible box for text or a figure.
-\definecolor{dengold}{HTML}{C8860D}
-\definecolor{dendarkbrown}{HTML}{3D2B1F}
-\definecolor{dencream}{HTML}{F2EBDD}
-\definecolor{denline}{HTML}{DDD0B8}
-
-\usepackage{tcolorbox}
-\tcbuselibrary{skins}
+% out row by row. cols.lua chooses one style per slot:
+%   dencard        cream box, orange border (an untitled .card)
+%   denheadcard    coloured header bar over a white body (.card with title)
+%   densoftcard    cream box with a brown heading inside (.card .soft)
+%   denfillcard    whole card in one colour, white text (.card .fill)
+%   denbanner      a bar of text (.banner)
+%   denplain       invisible box for text or a figure (.plain)
 \tcbset{
   denslot/.style={
     nobeforeafter, valign=top, halign=flush left,
-    before upper={\setlength{\parskip}{0.35em}\setlength{\leftmargini}{1.1em}},
+    before upper={\setlength{\parskip}{0.3em}\setlength{\leftmargini}{1.1em}},
   },
   dencard/.style={
-    denslot, colback=dencream, colframe=denline, coltext=dendark,
-    boxrule=0.4pt, arc=1.5pt, boxsep=0pt,
-    left=5pt, right=5pt, top=4pt, bottom=4pt,
+    denslot, enhanced, colback=dencream, colframe=denorange, coltext=dendark,
+    boxrule=0.75pt, arc=0.12in, boxsep=0pt,
+    left=0.15in, right=0.15in, top=0.1in, bottom=0.1in,
   },
-  dencardtitle/.style={
-    colframe=#1, colbacktitle=#1, coltitle=white,
-    toptitle=1pt, bottomtitle=1pt,
+  denheadcard/.style={
+    denslot, enhanced, colback=white, colframe=#1, colbacktitle=#1, coltitle=white,
+    boxrule=0.75pt, arc=0.08in, boxsep=0pt,
+    left=0.15in, right=0.15in, top=0.1in, bottom=0.1in,
+    toptitle=0.06in, bottomtitle=0.06in, lefttitle=0.15in, righttitle=0.15in,
+  },
+  densoftcard/.style={dencard},
+  denfillcard/.style={
+    denslot, enhanced, colback=#1, colframe=#1, coltext=white,
+    boxrule=0pt, arc=0.12in, boxsep=0pt,
+    left=0.18in, right=0.18in, top=0.12in, bottom=0.12in,
+  },
+  denbanner/.style={
+    denslot, enhanced, colback=#1, colframe=#1, coltext=white,
+    boxrule=0pt, arc=0.06in, boxsep=0pt, valign=center, halign=center,
+    left=0.1in, right=0.1in, top=0.02in, bottom=0.02in,
+  },
+  % Dark banner: dark brown with a light band along the top edge. Drawn with
+  % plain fills, not a shading, which PDF viewers and checkers treat as an image.
+  denbannershade/.style={
+    denslot, enhanced, colback=denbannerbottom, colframe=denbannerbottom, coltext=white,
+    boxrule=0pt, arc=0.02in, boxsep=0pt,
+    valign=center, halign=center, left=0.1in, right=0.1in, top=0.02in, bottom=0.02in,
+    underlay={
+      \fill[denbannertop] (frame.north west) rectangle ([yshift=-0.03in]frame.north east);
+      \fill[denbannertop!50!denbannerbottom] ([yshift=-0.03in]frame.north west) rectangle ([yshift=-0.07in]frame.north east);
+    },
+  },
+  % An orange disc with an icon, left of the text of a soft card.
+  % The text is indented by left=0.95in, set by cols.lua.
+  denicondisc/.style={
+    overlay={\node[circle, fill=denamber, minimum size=0.62in, inner sep=0pt]
+      at ([xshift=0.46in]frame.west) {\includegraphics[width=0.36in, height=0.36in]{#1}};},
   },
   denplain/.style={denslot, blanker},
 }
@@ -248,18 +293,26 @@
 \makeatother
 
 % === Table Styling ===
-% Row padding keeps multi-line rows apart; rules are brown, heavier at the
-% top and bottom. table-style.lua puts \dentablehead in every header cell.
+% Tan header row, cream stripes on every second body row, thin beige rules.
+% table-style.lua puts \dentablehead in every header cell and \dentablerow
+% in every cell of a striped row. Rule separation is zero so cell colours
+% meet the rules; \arraystretch provides the row padding instead.
 \usepackage{booktabs}
 \usepackage{colortbl}
-\renewcommand{\arraystretch}{1.3}
-\arrayrulecolor{denbrown}
-\setlength{\heavyrulewidth}{0.9pt}
-\setlength{\lightrulewidth}{0.4pt}
-\newcommand{\dentablehead}{\color{denbrown}\bfseries}
+\renewcommand{\arraystretch}{1.45}
+\arrayrulecolor{dentabline}
+\setlength{\heavyrulewidth}{0.75pt}
+\setlength{\lightrulewidth}{0.75pt}
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+\newcommand{\dentablehead}{\cellcolor{dentabhead}\color{dendarkbrown}\bfseries}
+\newcommand{\dentablerow}{\cellcolor{dencream}}
+\AtBeginEnvironment{longtable}{\densize{12}}
+% Tables start at the left margin, as in the master and the HTML output
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{\fill}
 
 % === Small Slide Classes for Heavy Content ===
-% \small and \footnotesize are used via Lua filter
-% These environments provide additional control if needed
-\newenvironment{smallslide}{\small}{}
-\newenvironment{smallerslide}{\footnotesize}{}
+% \densize{12} and \densize{11} are inserted by small-slide.lua.
+\newenvironment{smallslide}{\densize{12}}{}
+\newenvironment{smallerslide}{\densize{11}}{}

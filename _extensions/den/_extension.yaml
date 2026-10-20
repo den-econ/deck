@@ -1,36 +1,53 @@
 title: "DEN Branded Template"
 author: "DEN"
-version: "1.2.0"
+version: "2.0.0"
 quarto-required: ">=1.4"
 contributes:
   formats:
     revealjs:
       theme: [default, revealjs.scss]
-      slide-number: true
+      # The PowerPoint widescreen page at 72px per inch, so sizes in px equal
+      # the point sizes of the DEN PowerPoint master and of the beamer output.
+      width: 960
+      height: 540
+      margin: 0
+      center: false
+      max-scale: 4
+      slide-number: false
       footer: ""
       logo: logo.png
+      fig-width: 12
+      fig-height: 4.8
       title-slide-attributes:
         data-background-image: title.jpg
-        data-background-size: cover
-      css: revealjs.scss
-      include-after-body: title-detect.html
+        data-background-size: contain
+        data-background-color: white
+      include-after-body: den-slides.html
       filters:
         - ending-slide.lua
         - section-divider.lua
         - small-slide.lua
         - cols.lua
         - takeaway.lua
+        - source-note.lua
       format-resources:
         - end.jpg
+        - divider.jpg
+        - fonts/Carlito-Regular.woff
+        - fonts/Carlito-Bold.woff
+        - fonts/Carlito-Italic.woff
+        - fonts/Carlito-BoldItalic.woff
     beamer:
-      aspectratio: 169
+      pdf-engine: xelatex
+      fontsize: 14pt
+      classoption: [t]
       theme: default
       colortheme: default
       include-in-header: beamer-header.tex
       # Code-chunk figures are drawn at the size of the .fig-full slot
-      # (text width 5.5in), so figure fonts print at their true size.
-      fig-width: 5.5
-      fig-height: 2.2
+      # (text width 12.3in), so figure fonts print at their true size.
+      fig-width: 12
+      fig-height: 4.8
       filters:
         - ending-slide.lua
         - section-divider.lua
@@ -39,7 +56,9 @@ contributes:
         - fig-height.lua
         - takeaway.lua
         - table-style.lua
+        - source-note.lua
       format-resources:
         - title.jpg
+        - divider.jpg
         - end.jpg
         - logo.png

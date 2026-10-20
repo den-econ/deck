@@ -6,7 +6,7 @@ Usage:
 Opens the deck in headless Chromium, steps through every slide with all
 fragments shown, and reports content that runs off the slide canvas, sits in
 the margin, collides with the logo, the slide number or the DEN emblem on
-the title slide, overlaps other content, is clipped inside or spills out of a box (a card,
+the title, divider or ending slide, overlaps other content, is clipped inside or spills out of a box (a card,
 a takeaway or a cell that is too small), or is set too small to read. Writes one PNG per slide to DIR (default:
 <deck>_check_html/) so the slides can also be inspected by eye.
 
@@ -22,9 +22,9 @@ from pathlib import Path
 
 from playwright.sync_api import Page, sync_playwright
 
-SIDE_MARGIN = 0.003             # share of canvas width; DEN paragraphs sit ~6px from the edge by design
-BOTTOM_MARGIN = 0.015           # share of canvas height
-MIN_FONT_SHARE = 0.45           # text below this share of the deck's base font size is too small
+SIDE_MARGIN = 0.0225            # share of canvas width (0.3in); text margins are 0.5in
+BOTTOM_MARGIN = 0.007           # share of canvas height; the source line sits 0.13in above the edge
+MIN_FONT_SHARE = 0.64           # share of the 14px body size: below 9px is too small
 MIN_FONT_CHARS = 25             # ignore the odd subscript or axis tick
 OVERLAP_SHARE = 0.30            # share of a text line that must lie on a figure
 LINE_OVERLAP_HEIGHT = 0.40      # share of the shorter line's height two lines must share
@@ -33,7 +33,11 @@ MIN_OVERLAP_CHARS = 4           # ignore lone math glyphs such as a root sign
 CLIP_TOLERANCE = 2              # px of hidden overflow tolerated inside a box
 # The DEN emblem and name are part of the title-slide background image (title.jpg),
 # so they are not elements; text placed over them is caught by this zone instead.
-TITLE_EMBLEM_ZONE = (0.36, 0.05, 0.64, 0.31)   # x0, y0, x1, y1 as shares of the canvas
+TITLE_EMBLEM_ZONE = (0.40, 0.10, 0.60, 0.33)   # x0, y0, x1, y1 as shares of the canvas
+# The same for the emblem at the top left of the section-divider background (divider.jpg),
+# and for the emblem and name at the top of the ending-slide background (end.jpg).
+DIVIDER_EMBLEM_ZONE = (0.04, 0.06, 0.13, 0.22)
+ENDING_EMBLEM_ZONE = TITLE_EMBLEM_ZONE
 
 # Collects, for the current slide, every text line and figure box in canvas
 # coordinates (the 1050 x 700 slide before reveal.js scales it), plus boxes
@@ -53,7 +57,7 @@ MEASURE_JS = """
     return true;
   };
   const math = 'mjx-container, .MathJax, .MathJax_Display, .MathJax_SVG, .katex';
-  const skip = 'script, style, mjx-assistive-mml, .MJX_Assistive_MathML, .visually-hidden, .sr-only, aside.notes, .quarto-title-block .hidden';
+  const skip = 'script, style, mjx-assistive-mml, .MJX_Assistive_MathML, .visually-hidden, .sr-only, aside.notes, .quarto-title-block .hidden, .den-page';
   const slide = Reveal.getCurrentSlide();
   // The nearest ancestor drawn as a box (background or border), e.g. a card or a takeaway
   const boxOf = el => {
@@ -84,7 +88,7 @@ MEASURE_JS = """
     }
   }
 
-  const figures = [...slide.querySelectorAll(`img, svg, canvas, iframe, video, ${math}`)]
+  const figures = [...slide.querySelectorAll(`img:not(.den-logo), svg, canvas, iframe, video, ${math}`)]
     .filter(el => visible(el) && !(el.parentElement && el.parentElement.closest(math)))
     .map(el => ({tag: el.matches(math) ? 'math' : el.tagName.toLowerCase(),
                  box: toCanvas(el.getBoundingClientRect())}))
@@ -105,7 +109,7 @@ MEASURE_JS = """
   }
 
   const fixed = sel => {
-    const el = document.querySelector(sel);
+    const el = slide.querySelector(sel);
     return el && visible(el) && el.getBoundingClientRect().width > 0 ? toCanvas(el.getBoundingClientRect()) : null;
   };
   // A flex heading turns each formatted word into its own flex item, which drops the spaces around it
@@ -114,7 +118,8 @@ MEASURE_JS = """
     .map(h => h.textContent.trim());
   const base = parseFloat(getComputedStyle(document.querySelector('.reveal')).fontSize);
   return {width: cfg.width, height: cfg.height, base, lines, figures, clipped, squashed, isTitle: slide.id === 'title-slide',
-          logo: fixed('.reveal .slide-logo'), number: fixed('.reveal .slide-number')};
+          isDivider: slide.classList.contains('section-divider'), isEnding: slide.classList.contains('ending-slide'),
+          logo: fixed('.den-logo'), number: fixed('.den-page')};
 }
 """.replace("CLIP", str(CLIP_TOLERANCE))
 
@@ -182,8 +187,15 @@ def check_slide(m: dict) -> tuple[list[str], list[str]]:
     logo = Box(**m["logo"]) if m["logo"] else None
     number = Box(**m["number"]) if m["number"] else None
     emblem = None
+    zone, kind = None, ""
     if m["isTitle"]:
-        zx0, zy0, zx1, zy1 = TITLE_EMBLEM_ZONE
+        zone, kind = TITLE_EMBLEM_ZONE, "title slide"
+    elif m["isDivider"]:
+        zone, kind = DIVIDER_EMBLEM_ZONE, "section divider"
+    elif m["isEnding"]:
+        zone, kind = ENDING_EMBLEM_ZONE, "ending slide"
+    if zone:
+        zx0, zy0, zx1, zy1 = zone
         emblem = Box(zx0 * canvas.x1, zy0 * canvas.y1, zx1 * canvas.x1, zy1 * canvas.y1)
     lines = [Line(ln["text"], Box(**ln["box"]), ln["size"], Box(**ln["container"]) if ln["container"] else None)
              for ln in m["lines"]]
@@ -207,7 +219,7 @@ def check_slide(m: dict) -> tuple[list[str], list[str]]:
                   or b.y0 < c.y0 - CLIP_TOLERANCE or b.x0 < c.x0 - CLIP_TOLERANCE):
             errors.append(f"text spills out of its box: {quote(ln.text)}")
         if emblem and b.intersects(emblem):
-            errors.append(f"text covers the DEN emblem on the title slide: {quote(ln.text)}")
+            errors.append(f"text covers the DEN emblem on the {kind}: {quote(ln.text)}")
 
     for fig in figures + math:
         if fig.y1 > canvas.y1 + 1 or fig.x1 > canvas.x1 + 1 or fig.x0 < canvas.x0 - 1 or fig.y0 < canvas.y0 - 1:
@@ -247,6 +259,8 @@ def open_deck(page: Page, html: Path) -> list[tuple[int, int]]:
     page.wait_for_function("window.Reveal && Reveal.isReady()")
     page.evaluate("Reveal.configure({transition: 'none', backgroundTransition: 'none', fragments: false})")
     page.evaluate("document.fonts.ready")
+    # den-slides.html adds the logo and page number once fonts have loaded
+    page.wait_for_function("window.denDecorated === true", timeout=15000)
     page.wait_for_load_state("networkidle")
     return [tuple(ix) for ix in page.evaluate(
         "Reveal.getSlides().map(s => { const i = Reveal.getIndices(s); return [i.h, i.v || 0]; })")]
@@ -267,7 +281,7 @@ def main() -> int:
     n_errors = n_warnings = 0
     with sync_playwright() as pw:
         browser = pw.chromium.launch()
-        page = browser.new_page(viewport={"width": 1280, "height": 800})
+        page = browser.new_page(viewport={"width": 1280, "height": 720})
         indices = open_deck(page, args.html)
         for number, (h, v) in enumerate(indices, start=1):
             page.evaluate(f"Reveal.slide({h}, {v})")
