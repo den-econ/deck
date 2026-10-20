@@ -112,5 +112,12 @@ Rules for cards:
    one. The checker cannot judge crowding, figure legibility or alignment.
 5. Review each `warning`; fix it or be able to say why it is acceptable.
 
-The deck is not finished until the checker reports 0 errors and every slide
+If the deck is also rendered to revealjs, check the HTML too. Text wraps
+differently there, so a slide that fits in the PDF can still overflow:
+
+6. Render: `quarto render deck.qmd --to den-revealjs`
+7. Check: `python _extensions/den/check-deck-html.py deck.html`
+8. Fix every `ERROR` as in step 3 and look at the images in `deck_check_html/`.
+
+The deck is not finished until both checkers report 0 errors and every slide
 image has been looked at.

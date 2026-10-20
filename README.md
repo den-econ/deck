@@ -156,6 +156,16 @@ python _extensions/den/check-deck.py presentation.pdf
 
 Skrip ini melaporkan slide yang isinya keluar halaman, masuk ke margin, menabrak logo atau nomor halaman, saling menimpa, atau terlalu kecil, dan menyimpan gambar tiap slide di `presentation_check/` untuk diperiksa. Butuh [PyMuPDF](https://pymupdf.readthedocs.io/) (`pip install pymupdf`).
 
+### Pemeriksaan overflow (revealjs)
+
+Teks di HTML terbungkus berbeda dari PDF, sehingga slide yang muat di Beamer bisa meluber di revealjs. Setelah render HTML, jalankan:
+
+```bash
+python _extensions/den/check-deck-html.py presentation.html
+```
+
+Skrip ini membuka deck di Chromium *headless*, menampilkan semua *fragment*, lalu melaporkan teks yang keluar kanvas slide, menabrak logo, nomor slide, atau lambang DEN di slide judul, terpotong di dalam kotak (*card* atau sel tabel), saling menimpa, atau terlalu kecil. Gambar tiap slide disimpan di `presentation_check_html/`. Butuh [Playwright](https://playwright.dev/python/) (`pip install playwright`, lalu `python -m playwright install chromium`).
+
 ### Galeri dan aturan penulisan
 
 - `gallery.qmd` (di repo ini) memuat contoh tiap komponen.
