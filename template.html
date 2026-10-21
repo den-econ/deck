@@ -29,7 +29,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="template_files/libs/revealjs/dist/theme/quarto-b0dadcdad05de3fd7ab3be9cd20ad800.css">
+  <link rel="stylesheet" href="template_files/libs/revealjs/dist/theme/quarto-0809ea9d3ae988dbf65f63d2ba207d92.css">
   <link href="template_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="template_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="template_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -134,7 +134,7 @@
 
   <p class="date">04 February 2026</p>
 </section>
-<section id="introduction" class="slide level2">
+<section id="introduction" class="slide level2 large">
 <h2>Introduction</h2>
 <p>Welcome to your presentation! This template includes:</p>
 <ul>
@@ -209,7 +209,7 @@
 <section id="terima-kasih" class="slide level2 ending-slide" data-background-image="end.jpg" data-background-size="contain" data-background-color="white">
 <h2>Terima kasih</h2>
 </section>
-<section id="lampiran-catatan-tambahan" class="slide level2">
+<section id="lampiran-catatan-tambahan" class="slide level2 large">
 <h2>Lampiran: Catatan Tambahan</h2>
 <p>The ending slide is now a reusable environment, so you can place an appendix after it without breaking the layout.</p>
 <ul>
@@ -438,67 +438,129 @@
       });
     </script>
     <style>
+
     /* Carlito: metric-compatible substitute for Calibri where Calibri is not
+
        installed (SIL Open Font License, fonts/OFL.txt). Declared here rather
+
        than in revealjs.scss so the URLs resolve next to the document. */
+
     @font-face { font-family: "DEN Carlito"; src: local("Carlito"), url("Carlito-Regular.woff") format("woff"); font-weight: 400; font-style: normal; }
+
     @font-face { font-family: "DEN Carlito"; src: local("Carlito Bold"), url("Carlito-Bold.woff") format("woff"); font-weight: 700; font-style: normal; }
+
     @font-face { font-family: "DEN Carlito"; src: local("Carlito Italic"), url("Carlito-Italic.woff") format("woff"); font-weight: 400; font-style: italic; }
+
     @font-face { font-family: "DEN Carlito"; src: local("Carlito Bold Italic"), url("Carlito-BoldItalic.woff") format("woff"); font-weight: 700; font-style: italic; }
+
     </style>
+
     <script>
+
     // Slide furniture that reveal.js draws outside the scaled canvas (logo, slide
+
     // number) is drawn inside each slide instead, so it sits on the slide in
+
     // every window shape, as in the PDF. Also marks titles that need a smaller
+
     // size: a slide title over two lines, a title-slide title over three.
+
     (function () {
+
       const PLAIN = ['section-divider', 'ending-slide'];
 
+    
+
       function lines(el) {
+
         const style = getComputedStyle(el);
+
         return Math.round(el.offsetHeight / parseFloat(style.lineHeight));
+
       }
+
+    
 
       function decorate() {
+
         const logo = document.querySelector('.reveal .slide-logo');
+
         const logoSrc = logo ? logo.getAttribute('src') : null;
 
+    
+
         Reveal.getSlides().forEach(function (slide) {
+
           if (slide.id === 'title-slide' || PLAIN.some(c => slide.classList.contains(c))) return;
+
           if (slide.querySelector(':scope > .den-page')) return;
+
           if (logoSrc) {
+
             const img = document.createElement('img');
+
             img.className = 'den-logo';
+
             img.src = logoSrc;
+
             img.alt = '';
+
             slide.appendChild(img);
+
           }
+
           const page = document.createElement('div');
+
           page.className = 'den-page';
+
           page.textContent = Reveal.getIndices(slide).h;
+
           slide.appendChild(page);
+
         });
+
+    
 
         document.querySelectorAll('.reveal .slides section:not(#title-slide) h2').forEach(function (h2) {
+
           h2.classList.toggle('heading-long', lines(h2) > 2);
+
         });
 
+    
+
         const titleSlide = document.getElementById('title-slide');
+
         const title = titleSlide && titleSlide.querySelector('h1.title');
+
         if (title) titleSlide.classList.toggle('title-long', lines(title) > 3);
+
         window.denDecorated = true;
+
       }
+
+    
 
       function start() {
+
         // Measure after the fonts have loaded, or line counts come out wrong.
+
         (document.fonts ? document.fonts.ready : Promise.resolve()).then(decorate);
+
       }
 
+    
+
       if (typeof Reveal === 'undefined') return;
+
       if (Reveal.isReady()) start();
+
       else Reveal.on('ready', start);
+
     })();
+
     </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

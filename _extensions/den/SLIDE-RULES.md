@@ -26,7 +26,7 @@ headings or beamer blocks.
 | Element | Size |
 |:--|:--|
 | Slide title | Arial Bold 18pt, at most two lines (16pt is applied automatically for a third line; shorten instead) |
-| Body text, bullets | Calibri 14pt; `{.small}` 12pt, `{.smaller}` 11pt |
+| Body text, bullets | Calibri 16pt on text-only slides (no figure, table or `.cols`), 14pt otherwise; `{.normal}` forces 14pt, `{.small}` 12pt, `{.smaller}` 11pt |
 | Card text | 12pt at 2 or 3 columns, 11pt at 4, 10pt at 6 |
 | Card and chart headings | 14pt at 2 or 3 columns, 12pt at 4, 11pt at 6 |
 | Tables, source and note lines | 12pt |
@@ -45,7 +45,8 @@ a budget, split the slide. Never shrink text to make it fit.
 
 | Slide type | Budget |
 |:--|:--|
-| Normal text | 6 bullets, 2 lines each |
+| Text only (16pt) | 5 bullets, 2 lines each; `{.normal}` for 6 |
+| Text with a figure, table or `.cols` (14pt) | 6 bullets, 2 lines each |
 | `{.small}` | 8 bullets |
 | `{.smaller}` | Dense tables and equations only, not for more bullets |
 | Table, one-line cells | 10 body rows, 6 columns |
@@ -169,7 +170,9 @@ Rules for cards:
   placed last. Not for sources or footnotes.
 - **Tables**: plain pipe or grid tables. The header row is tan, every
   second row cream, rules thin; add no table markup.
-- **Sizes**: only `{.small}` and `{.smaller}` on the slide header.
+- **Sizes**: set automatically (16pt text-only, 14pt with a figure, table or
+  `.cols`); override only with `{.normal}`, `{.small}` or `{.smaller}` on the
+  slide header.
 - **Section divider**: `## Bagian 2: Hasil {.section-divider}`.
 - **Ending slide**: `## Terima kasih {.ending-slide}`.
 

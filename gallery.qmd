@@ -51,10 +51,10 @@ tier2 = np.array([21, 23, 36, 39, 33, 63, 62, 54, 54, 54, 53, 41, 40, 39, 38, 36
 
 ## Slide teks: ukuran normal
 
-- Paling banyak enam butir, masing-masing paling banyak dua baris.
+- Paling banyak lima butir (enam dengan `{.normal}`), masing-masing paling banyak dua baris.
 - Satu slide membawa satu pesan; judul slide menyatakan pesan itu.
 - Jika isi tidak muat, pecah menjadi dua slide.
-- Huruf isi 14pt Calibri, judul 18pt Arial tebal, sama di PDF dan HTML.
+- Huruf isi Calibri 16pt di slide tanpa gambar, 14pt di slide bergambar; judul 18pt Arial tebal.
 
 ::: {.takeaway}
 Kotak takeaway memuat satu pesan utama slide, paling banyak dua baris.

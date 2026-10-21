@@ -51,7 +51,8 @@ Your content here.
 
 ## Heavy content {.small}
 
-use class {.small} or {.smaller} for a slide with a heavily worded content.
+Text-only slides (bullets, equations) are set at 16pt automatically; slides with a figure, table or `.cols` grid stay at 14pt.
+Use {.normal} to keep a text-only slide at 14pt, and {.small} or {.smaller} for a slide with a heavily worded content.
 
 ## Bagian 2: Analisis {.section-divider}
 

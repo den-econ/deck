@@ -161,9 +161,10 @@
 \setbeamertemplate{itemize item}{\textcolor{denbar}{\textbullet}}
 \setbeamertemplate{itemize subitem}{\textcolor{denbar}{\textendash}}
 \setbeamertemplate{enumerate item}{\textcolor{denbar}{\insertenumlabel.}}
-% Body text is 14pt (the 14pt class option); sub-items stay at 14pt too.
-\setbeamerfont{itemize/enumerate subbody}{size=\normalsize}
-\setbeamerfont{itemize/enumerate subsubbody}{size=\normalsize}
+% Sub-items keep the size of the slide's body text (beamer makes them smaller,
+% and \normalsize would reset them to 14pt on a 16pt or 12pt slide).
+\setbeamerfont*{itemize/enumerate subbody}{}
+\setbeamerfont*{itemize/enumerate subsubbody}{}
 
 % === Ending Slide ===
 \providecommand{\denendslide}{
@@ -312,7 +313,8 @@
 \setlength{\LTleft}{0pt}
 \setlength{\LTright}{\fill}
 
-% === Small Slide Classes for Heavy Content ===
-% \densize{12} and \densize{11} are inserted by small-slide.lua.
+% === Slide Size Classes ===
+% \densize{16}, \densize{12} and \densize{11} are inserted by small-slide.lua.
+\newenvironment{largeslide}{\densize{16}}{}
 \newenvironment{smallslide}{\densize{12}}{}
 \newenvironment{smallerslide}{\densize{11}}{}
