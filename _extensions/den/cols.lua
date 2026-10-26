@@ -10,16 +10,28 @@
 --                                  icon="..." adds a logo left of the heading
 --   ::: {.banner}                  a bar of bold text, e.g. "REKOMENDASI"
 --   ::: {.plain}                   no box: text or a figure on the slide;
---                                  title="..." unit="Persen" add a chart heading
--- Colour classes for header, fill and banner: .gold .amber .rust .orange .tan
--- .brown .dark (header default dark brown, fill default amber, banner default
--- gold; a .dark banner is a brown gradient).
+--                                  title="..." unit="Persen" add a chart heading;
+--                                  .panel draws a white framed panel around it
+--   ::: {.kpi value="US$1,4 miliar" label="Baja karbon"}
+--                                  a big number, a bold label and a line of text
+--   ::: {.stack}                   several cards or .kpi slots stacked in one
+--                                  column; rows="1,1,1.3" sets their heights
+-- Colour classes for header, fill, banner and kpi value: .gold .amber .rust
+-- .orange .tan .brown .dark (header default dark brown, fill default amber,
+-- banner default gold, kpi brown; a .dark banner is a brown gradient).
 -- A slot with .wide takes a full row. `rows="2,1"` sets relative row heights
--- (default 1 per row, 0.5 for a .wide row, 0.25 for a row of banners) and
--- `height="80%"` the share of the slide body the grid occupies.
+-- (default 1 per row, 0.5 for a .wide row, 0.25 for a row of banners),
+-- `height="80%"` the share of the slide body the grid occupies, and
+-- `widths="2,1"` relative column widths (n defaults to their number).
 --
 -- Rows have fixed heights, so cards in a row are equally tall and a figure in
 -- a slot is scaled to fit it. Text size is fixed per n, never per slide.
+--
+-- `.fit` (revealjs only) drops the fixed heights: each row is as tall as its
+-- tallest slot, a figure keeps its drawn size, charts and stacks are centred
+-- against their neighbours, and fit-slide.lua centres the grid (with the
+-- takeaway below it) in the slide body. Beamer ignores .fit and keeps the
+-- fixed rows.
 --
 -- A `###` heading must not be used as a card title: inside a div, revealjs
 -- turns it into a separate slide.
@@ -35,6 +47,7 @@ local SLOT_BOXES = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L" 
 -- Text and heading sizes in pt per number of columns
 local BODY_PT = { [1] = 14, [2] = 12, [3] = 12, [4] = 11, [6] = 10 }
 local HEAD_PT = { [1] = 16, [2] = 14, [3] = 14, [4] = 12, [6] = 11 }
+local KPI_PT = 24
 local COLOURS = { gold = "dengold", amber = "denamber", rust = "denrust", orange = "denorange",
                   tan = "dentan", brown = "denbar", dark = "dendarkbrown" }
 
@@ -43,6 +56,8 @@ local function is_latex()
 end
 
 local function kind(slot)
+  if slot.classes:includes("stack") then return "stack" end
+  if slot.classes:includes("kpi") then return "kpi" end
   if slot.classes:includes("banner") then return "banner" end
   if not slot.classes:includes("card") then return "plain" end
   if slot.classes:includes("fill") then return "fill" end
@@ -51,17 +66,31 @@ local function kind(slot)
   return "card"
 end
 
+local function numbers(text)
+  local values = {}
+  for part in (text or ""):gmatch("[%d%.]+") do
+    values[#values + 1] = tonumber(part)
+  end
+  return values
+end
+
+local function child_divs(el)
+  local divs = pandoc.List()
+  for _, child in ipairs(el.content) do
+    if child.t == "Div" then divs:insert(child) end
+  end
+  return divs
+end
+
 local function grid_rows(el, n)
   local rows, current = {}, {}
-  for _, child in ipairs(el.content) do
-    if child.t == "Div" then
-      if child.classes:includes("wide") then
-        if #current > 0 then rows[#rows + 1] = { slots = current }; current = {} end
-        rows[#rows + 1] = { slots = { child }, wide = true }
-      else
-        current[#current + 1] = child
-        if #current == n then rows[#rows + 1] = { slots = current }; current = {} end
-      end
+  for _, child in ipairs(child_divs(el)) do
+    if child.classes:includes("wide") then
+      if #current > 0 then rows[#rows + 1] = { slots = current }; current = {} end
+      rows[#rows + 1] = { slots = { child }, wide = true }
+    else
+      current[#current + 1] = child
+      if #current == n then rows[#rows + 1] = { slots = current }; current = {} end
     end
   end
   if #current > 0 then rows[#rows + 1] = { slots = current } end
@@ -75,18 +104,35 @@ local function all_banners(row)
   return true
 end
 
-local function row_shares(el, rows)
-  local given = {}
-  for part in (el.attributes.rows or ""):gmatch("[%d%.]+") do
-    given[#given + 1] = tonumber(part)
-  end
-  local shares, total = {}, 0
-  for i, row in ipairs(rows) do
-    shares[i] = given[i] or (all_banners(row) and 0.25) or (row.wide and 0.5) or 1
-    total = total + shares[i]
-  end
+local function normalise(shares)
+  local total = 0
+  for _, s in ipairs(shares) do total = total + s end
   for i = 1, #shares do shares[i] = shares[i] / total end
   return shares
+end
+
+local function row_shares(el, rows)
+  local given = numbers(el.attributes.rows)
+  local shares = {}
+  for i, row in ipairs(rows) do
+    shares[i] = given[i] or (all_banners(row) and 0.25) or (row.wide and 0.5) or 1
+  end
+  return normalise(shares)
+end
+
+-- Relative heights of the slots in a stack, from its own rows="..."
+local function stack_shares(stack, count)
+  local given = numbers(stack.attributes.rows)
+  local shares = {}
+  for i = 1, count do shares[i] = given[i] or 1 end
+  return normalise(shares)
+end
+
+local function column_weights(el, n)
+  local given = numbers(el.attributes.widths)
+  local weights = {}
+  for i = 1, n do weights[i] = given[i] or 1 end
+  return normalise(weights)
 end
 
 local function grid_share(el)
@@ -140,7 +186,11 @@ local function chrome_in(k, slot, head_pt)
   if k == "head" then return 0.32 + line + (slot.attributes.kicker and 0.2 or 0) end
   if k == "soft" or k == "fill" then return 0.3 + (slot.attributes.title and line + 0.06 or 0) end
   if k == "card" then return 0.25 end
-  if k == "plain" and slot.attributes.title then return line + (slot.attributes.unit and 0.22 or 0) + 0.08 end
+  if k == "plain" then
+    local frame = slot.classes:includes("panel") and 0.3 or 0
+    if slot.attributes.title then return frame + line + (slot.attributes.unit and 0.22 or 0) + 0.08 end
+    return frame
+  end
   return 0
 end
 
@@ -150,12 +200,35 @@ local function latex_heading(slot, head_pt, body_pt, colour_name)
   return "{\\color{" .. colour_name .. "}\\bfseries" .. size(head_pt) .. " " .. latex(title) .. "\\par}\\vspace{0.06in}"
 end
 
-local function latex_slot(slot, box, width_share, height_in, n)
+local latex_box
+
+-- A stack is an invisible box holding its slots one above the other, each
+-- given a fixed share of the height (equal unless the stack sets rows).
+local function latex_stack(slot, width, height_in, n)
+  local children = child_divs(slot)
+  local shares = stack_shares(slot, #children)
+  -- A little slack, so rounding never makes the stack taller than its slot
+  local available = height_in - (#children - 1) * GAP_IN - 0.02
+  local blocks = pandoc.List({ pandoc.RawBlock("latex", string.format(
+    "\\begin{tcolorbox}[denplain, width=%s, height=%.3fin]\\setlength{\\parskip}{0pt}", width, height_in)) })
+  for i, child in ipairs(children) do
+    if i > 1 then
+      blocks:insert(pandoc.RawBlock("latex", string.format("\\par\\nointerlineskip\\vspace{%.2fin}", GAP_IN)))
+    end
+    blocks:insert(pandoc.RawBlock("latex", "\\noindent"))
+    blocks:extend(latex_box(child, "\\linewidth", shares[i] * available, n))
+  end
+  blocks:insert(pandoc.RawBlock("latex", "\\par\\end{tcolorbox}"))
+  return blocks
+end
+
+-- The tcolorbox for one slot, `width` a TeX length and `height_in` inches.
+latex_box = function(slot, width, height_in, n)
   local k = kind(slot)
+  if k == "stack" then return latex_stack(slot, width, height_in, n) end
   local body_pt, head_pt = BODY_PT[n] or 10, HEAD_PT[n] or 11
   local font = size(body_pt)
-  local options = { string.format("width=%.4f\\textwidth", width_share),
-                    string.format("height=%.3fin", height_in) }
+  local options = { "width=" .. width, string.format("height=%.3fin", height_in) }
   local before = ""
   local icon = slot.attributes.icon
 
@@ -197,10 +270,18 @@ local function latex_slot(slot, box, width_share, height_in, n)
       table.insert(options, 1, "denbanner=" .. colour(slot, "dengold"))
     end
     font = "\\bfseries" .. size(head_pt + 2)
+  elseif k == "kpi" then
+    table.insert(options, 1, "denplain")
+    options[#options + 1] = "valign=center"
+    local value = inlines(slot.attributes.value)
+    local label = inlines(slot.attributes.label)
+    before = (value and ("{\\color{" .. colour(slot, "denbar") .. "}\\bfseries" .. size(KPI_PT) .. " "
+                         .. latex(value) .. "\\par}\\vspace{0.04in}") or "")
+      .. (label and ("{\\bfseries" .. size(body_pt) .. " " .. latex(label) .. "\\par}") or "")
   elseif k == "card" then
     table.insert(options, 1, "dencard")
   else
-    table.insert(options, 1, "denplain")
+    table.insert(options, 1, slot.classes:includes("panel") and "denpanel" or "denplain")
     local title = inlines(slot.attributes.title)
     if title then
       local unit = slot.attributes.unit
@@ -220,29 +301,38 @@ local function latex_slot(slot, box, width_share, height_in, n)
 
   options[#options + 1] = "fontupper=" .. font
   local blocks = pandoc.List({ pandoc.RawBlock("latex",
-    "\\begin{lrbox}{\\denslot" .. box .. "}\\begin{tcolorbox}[" .. table.concat(options, ", ") .. "]"
+    "\\begin{tcolorbox}[" .. table.concat(options, ", ") .. "]"
     .. before .. (only_image(content) and "\\centering" or "")) })
   blocks:extend(content)
-  blocks:insert(pandoc.RawBlock("latex", "\\end{tcolorbox}\\end{lrbox}"))
+  blocks:insert(pandoc.RawBlock("latex", "\\end{tcolorbox}"))
+  return blocks
+end
+
+local function latex_slot(slot, box, width, height_in, n)
+  local blocks = pandoc.List({ pandoc.RawBlock("latex", "\\begin{lrbox}{\\denslot" .. box .. "}") })
+  blocks:extend(latex_box(slot, width, height_in, n))
+  blocks:insert(pandoc.RawBlock("latex", "\\end{lrbox}"))
   return blocks
 end
 
 local function latex_grid(el, n, rows, shares)
   local gap_share = GAP_IN / TEXTWIDTH_IN
-  -- Rounded down, so a row never comes out wider than the text and wraps.
-  local column_share = math.floor((1 - (n - 1) * gap_share) / n * 1000) / 1000
+  local weights = column_weights(el, n)
   local rows_in = grid_share(el) * BODY_IN - (#rows - 1) * GAP_IN
 
   local blocks, lines, used = pandoc.List(), {}, 0
   for i, row in ipairs(rows) do
     local boxes = {}
-    for _, slot in ipairs(row.slots) do
+    for j, slot in ipairs(row.slots) do
       used = used + 1
       if used > #SLOT_BOXES then
         error("cols.lua: a .cols grid holds at most " .. #SLOT_BOXES .. " slots")
       end
       local box = SLOT_BOXES[used]
-      blocks:extend(latex_slot(slot, box, row.wide and 1 or column_share, shares[i] * rows_in, n))
+      -- Rounded down, so a row never comes out wider than the text and wraps.
+      local share = row.wide and 1
+        or math.floor((1 - (n - 1) * gap_share) * weights[j] * 1000) / 1000
+      blocks:extend(latex_slot(slot, box, string.format("%.4f\\textwidth", share), shares[i] * rows_in, n))
       boxes[#boxes + 1] = "\\usebox{\\denslot" .. box .. "}"
     end
     lines[#lines + 1] = "\\noindent" .. table.concat(boxes, string.format("\\hspace{%.4f\\textwidth}", gap_share))
@@ -262,8 +352,25 @@ local function icon_image(path, class)
   return pandoc.Image({}, path, "", pandoc.Attr("", { class }))
 end
 
-local function html_slot(slot)
+local html_slot
+
+local function html_stack(slot)
+  local children = child_divs(slot)
+  local shares = stack_shares(slot, #children)
+  local content = pandoc.List()
+  for i, child in ipairs(children) do
+    local done = html_slot(child)
+    done.attributes.style = string.format("--share: %.4f;", shares[i])
+    content:insert(done)
+  end
+  slot.attributes.rows = nil
+  slot.content = content
+  return slot
+end
+
+html_slot = function(slot)
   local k = kind(slot)
+  if k == "stack" then return html_stack(slot) end
   local content = unfloat(slot.content)
   if only_image(content) then
     content = pandoc.List({ pandoc.Plain(content[1].content) })
@@ -295,6 +402,12 @@ local function html_slot(slot)
     content = pandoc.List()
     if icon and k == "soft" then content:insert(div({ pandoc.Plain({ icon_image(icon, "card-icon") }) }, "card-disc")) end
     content:insert(div(inner, "card-main"))
+  elseif k == "kpi" then
+    content = pandoc.List()
+    local value, label = inlines(slot.attributes.value), inlines(slot.attributes.label)
+    if value then content:insert(div({ pandoc.Plain(value) }, "kpi-value")) end
+    if label then content:insert(div({ pandoc.Plain(label) }, "kpi-label")) end
+    content:insert(body)
   elseif k == "plain" and title then
     slot.classes:insert("charted")
     local head = pandoc.List({ div({ pandoc.Plain(title) }, "chart-title") })
@@ -308,18 +421,24 @@ local function html_slot(slot)
   else
     content = pandoc.List({ body })
   end
-  for _, name in ipairs({ "title", "kicker", "icon", "unit" }) do slot.attributes[name] = nil end
+  for _, name in ipairs({ "title", "kicker", "icon", "unit", "value", "label" }) do slot.attributes[name] = nil end
   slot.content = content
   return slot
 end
 
 local function html_grid(el, n, rows, shares)
-  local tracks = {}
-  for i = 1, #shares do tracks[i] = string.format("%.4ffr", shares[i]) end
+  local columns = {}
+  for i, w in ipairs(column_weights(el, n)) do columns[i] = string.format("%.4ffr", w) end
+  local style = string.format("--n: %d; grid-template-columns: %s;", n, table.concat(columns, " "))
+  if not el.classes:includes("fit") then
+    local tracks = {}
+    for i = 1, #shares do tracks[i] = string.format("%.4ffr", shares[i]) end
+    style = style .. string.format(" height: %dpx; grid-template-rows: %s;",
+      math.floor(grid_share(el) * BODY_IN * PX_PER_IN), table.concat(tracks, " "))
+  end
   el.classes:insert("n" .. n)
-  el.attributes.style = string.format("--n: %d; height: %dpx; grid-template-rows: %s;",
-    n, math.floor(grid_share(el) * BODY_IN * PX_PER_IN), table.concat(tracks, " "))
-  el.attributes.n, el.attributes.rows, el.attributes.height = nil, nil, nil
+  el.attributes.style = style
+  el.attributes.n, el.attributes.rows, el.attributes.height, el.attributes.widths = nil, nil, nil, nil
   local slots = pandoc.List()
   for _, row in ipairs(rows) do
     for _, slot in ipairs(row.slots) do slots:insert(html_slot(slot)) end
@@ -332,7 +451,7 @@ function Div(el)
   if not el.classes:includes("cols") then
     return nil
   end
-  local n = tonumber(el.attributes.n) or 2
+  local n = tonumber(el.attributes.n) or math.max(#numbers(el.attributes.widths), 2)
   local rows = grid_rows(el, n)
   local shares = row_shares(el, rows)
   if is_latex() then

@@ -91,13 +91,17 @@ Each child is a slot:
 | Banner | `::: {.banner}` | a bar of bold text such as "REKOMENDASI"; `.dark` for the brown gradient bar |
 | Chart | `::: {.plain title="..." unit="Persen"}` | a figure with a bold centred heading and "(Persen)" under it |
 | Plain | `::: {.plain}` | no box: text or a figure on the slide background |
+| Panel | `::: {.plain .panel}` | a figure (or text) in a white panel with a thin beige frame; `title`/`unit` work as for a chart |
+| Stack | `::: {.stack rows="1,1,1.3"}` | several cards or `.kpi` slots one above the other in one column; `rows` sets their relative heights |
+| Big number | `::: {.kpi value="US$1,4 miliar" label="Baja karbon"}` | a 24pt number (colour class, default brown), a bold label, then the div text as one descriptive line |
 
 Colours for headers, filled cards and banners: `.gold`, `.amber`, `.rust`,
 `.orange`, `.tan`, `.brown`, `.dark`. Defaults: header dark brown, filled
 card amber, banner gold. Use colour to group (one colour per stage or per
 institution), not for decoration.
 
-A slot with `.wide` takes a full row. `rows="2,0.3,1"` sets relative row
+`widths="2,1"` gives unequal column widths (n defaults to their count; text
+size still follows n). A slot with `.wide` takes a full row. `rows="2,0.3,1"` sets relative row
 heights (default 1 per row, 0.5 for a `.wide` row, 0.25 for a row of
 banners). `height="80%"` is the share of the slide body the grid fills
 (default 80%, which leaves room for one takeaway; use 100% when the grid is
@@ -117,6 +121,20 @@ Typical layouts, as in DEN decks:
 | 3 x 2 header cards | `{.cols n=3}` |
 | 4 x 2 header cards | `{.cols n=4}` |
 | 6 columns + 1 row | `{.cols n=6 rows="2,1"}`, 7th slot `.wide` |
+| Wide chart + 3 stacked cards, pinned takeaway | `{.cols widths="2,1" height="85%"}`: a `.plain .panel` slot, then a `.stack` of 3 header cards |
+| Wide chart + 3–4 big numbers | `{.cols .fit widths="3,2"}`: a `.plain .panel` slot, then a `.stack` of `.kpi` slots |
+| One row of cards sized to their text | `{.cols .fit n=3 height="45%"}` followed by a takeaway |
+
+`.fit` (revealjs only) makes each row as tall as its tallest slot, keeps
+figures at their drawn size, centres charts and stacks against their
+neighbours, and centres the slide content (grid plus an unpinned takeaway)
+vertically. Beamer ignores `.fit` and keeps the fixed rows, so still give a
+`height` that suits the PDF.
+
+A `.stack` holds at most 4 slots; its cards follow the budget of the stack's
+column at a half-height row or less. A panel figure is drawn 0.3 in smaller
+than its slot in both directions: about 7.8 x 4.4 in at `widths="2,1"
+height="85%"`, 7 x 4 in at `widths="3,2"`.
 
 Budget per card (text in the body, the heading excluded):
 
@@ -167,9 +185,18 @@ Rules for cards:
 ## Components
 
 - **Takeaway**: `::: {.takeaway}` … `:::`. The single message of the slide,
-  placed last. Not for sources or footnotes.
+  placed last. Not for sources or footnotes. `{.takeaway .pin}` fixes its
+  bottom edge 0.6 in above the foot of the page on every slide; content above
+  must end before it (a `.cols` grid at most `height="85%"`), and a note line
+  is then limited to one line.
 - **Tables**: plain pipe or grid tables. The header row is tan, every
-  second row cream, rules thin; add no table markup.
+  second row cream, rules thin; add no table markup. Wrap a table in
+  `::: {.wide-table widths="2,6,4" row-height="0.5"}` to span the full text
+  width with set column widths and a minimum row height (inches).
+- **Steps**: `:::: {.steps}` with child `::: {.step title="..."}` divs: equal
+  bars, each indented 0.35 in more than the one above, numbered, colours
+  gold, amber, brown, dark. At most 5 steps, one or two lines each;
+  `height` as for `.cols` (default 80%).
 - **Sizes**: set automatically (16pt text-only, 14pt with a figure, table or
   `.cols`); override only with `{.normal}`, `{.small}` or `{.smaller}` on the
   slide header.

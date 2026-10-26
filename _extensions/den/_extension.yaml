@@ -28,8 +28,11 @@ contributes:
         - section-divider.lua
         - small-slide.lua
         - cols.lua
+        - steps.lua
+        - wide-table.lua
         - takeaway.lua
         - source-note.lua
+        - fit-slide.lua
       format-resources:
         - end.jpg
         - divider.jpg
@@ -53,8 +56,10 @@ contributes:
         - section-divider.lua
         - small-slide.lua
         - cols.lua
+        - steps.lua
         - fig-height.lua
         - takeaway.lua
+        - wide-table.lua
         - table-style.lua
         - source-note.lua
       format-resources:

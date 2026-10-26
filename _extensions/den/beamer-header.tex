@@ -217,12 +217,18 @@
 % === Takeaway Box ===
 % Full-text-width bar for the single message of a slide, used by takeaway.lua
 % for `::: {.takeaway}`. Fixed font size, so it looks the same on every slide.
-\newtcolorbox{dentakeaway}{
+% A pinned takeaway (`.pin`) is set in a textblock* whose bottom-left corner
+% is fixed at (0.5in, 6.9in), above the note line.
+\usepackage[absolute,overlay]{textpos}
+\newlength{\denTextWidth}
+\setlength{\denTextWidth}{12.333in}
+\newtcolorbox{dentakeaway}[1][]{
   enhanced, colback=denbar, colframe=denbar, coltext=white, boxrule=0pt,
   arc=0.06in, left=0.15in, right=0.15in, top=0.08in, bottom=0.08in,
   before skip=0.15in, after skip=0pt,
   fontupper=\bfseries\densize{14},
   before upper={\setbeamertemplate{itemize item}{\textbullet}\setbeamertemplate{itemize subitem}{\textendash}},
+  #1
 }
 
 % === Slot Grid and Cards ===
@@ -280,6 +286,21 @@
       at ([xshift=0.46in]frame.west) {\includegraphics[width=0.36in, height=0.36in]{#1}};},
   },
   denplain/.style={denslot, blanker},
+  % White panel with a thin beige frame around a figure (.plain .panel)
+  denpanel/.style={
+    denslot, enhanced, colback=white, colframe=dentabline, coltext=dendark,
+    boxrule=0.75pt, arc=0.04in, boxsep=0pt,
+    left=0.15in, right=0.15in, top=0.15in, bottom=0.15in,
+  },
+  % One bar of a .steps sequence (steps.lua): colour #1, number #2 in a
+  % white disc at the left
+  denstep/.style 2 args={
+    enhanced, colback=#1, colframe=#1, coltext=white, boxrule=0pt,
+    arc=0.06in, boxsep=0pt, left=0.65in, right=0.2in, top=0.06in, bottom=0.06in,
+    valign=center, halign=flush left, before skip=0pt, fontupper=\densize{12},
+    overlay={\node[circle, fill=white, text=#1, minimum size=0.3in, inner sep=0pt,
+      font=\bfseries\densize{12}] at ([xshift=0.32in]frame.west) {#2};},
+  },
 }
 \newsavebox{\denslotA}\newsavebox{\denslotB}\newsavebox{\denslotC}\newsavebox{\denslotD}
 \newsavebox{\denslotE}\newsavebox{\denslotF}\newsavebox{\denslotG}\newsavebox{\denslotH}

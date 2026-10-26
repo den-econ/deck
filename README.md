@@ -115,6 +115,18 @@ Bank Indonesia & CEIC, diolah
 
 Hasilnya "**Catatan:** Posisi per 30 Juni 2026." dan "**Sumber:** Bank Indonesia & CEIC, diolah". `label="Source"` mengganti label.
 
+### Takeaway di posisi tetap: `.pin`
+
+Tambahkan `.pin` agar takeaway selalu berada di dasar badan slide (tepi bawahnya 0,6 inci dari kaki halaman), berapa pun tinggi isi di atasnya. Berlaku di Beamer dan Reveal.js.
+
+```markdown
+::: {.takeaway .pin}
+Pesan utama slide.
+:::
+```
+
+Takeaway tanpa `.pin` tetap mengikuti isi di atasnya. Dengan `.pin`, isi di atasnya harus berhenti sebelum bilah takeaway (grid `.cols` paling tinggi `height="85%"`), dan catatan (`.note`) paling banyak satu baris.
+
 ### Grid slot dan card
 
 `:::: {.cols n=N}` menata div di dalamnya menjadi N kolom sama lebar, baris demi baris. Tiap div adalah satu slot. Berlaku di Beamer dan Reveal.js.
@@ -167,6 +179,100 @@ Deregulasi.
 
 `rows="2,1"` mengatur perbandingan tinggi baris; `height="80%"` mengatur bagian badan slide yang dipakai grid (default 80%, cukup untuk satu takeaway; pakai 100% bila grid sendirian di slide). Tinggi baris tetap, sehingga card dalam satu baris sama tinggi dan gambar di dalam slot diperkecil agar muat. Ukuran huruf ditentukan oleh N. Jangan memakai `###` di dalam slot. Ikon contoh di `img/` dibuat oleh `tools/make-icons.py`; ikon sendiri sebaiknya putih di atas latar transparan. Output Beamer memerlukan paket LaTeX `tcolorbox`.
 
+#### Komposisi: kolom tidak sama lebar, tumpukan, angka kunci, panel grafik
+
+Bagian ini untuk komposisi ala deck DEN terbaru: grafik lebar di kiri, kolom sempit berisi card bertumpuk atau angka kunci di kanan.
+
+| Penulisan | Fungsi | Beamer | Reveal.js |
+|:--|:--|:--|:--|
+| `:::: {.cols widths="2,1"}` | lebar kolom relatif (di sini 2/3 dan 1/3); N otomatis sama dengan jumlah angka, ukuran huruf mengikuti N | ya | ya |
+| `::: {.plain .panel}` | gambar (atau teks) di dalam panel putih berbingkai tipis; `title` dan `unit` tetap bisa dipakai | ya | ya |
+| `::: {.stack}` | satu slot berisi beberapa card atau `.kpi` yang ditumpuk vertikal; `rows="1,1,1.3"` mengatur perbandingan tingginya | ya (tinggi dibagi sesuai `rows`) | ya |
+| `::: {.kpi value="..." label="..."}` | angka besar (24pt), label tebal, lalu teks isi div sebagai keterangan; warna angka dengan `.gold`, `.dark`, dst. (default cokelat) | ya | ya |
+| `:::: {.cols .fit}` | tinggi baris mengikuti isi, gambar tetap pada ukuran gambarnya, grafik dan tumpukan dipusatkan terhadap tetangganya, isi slide (grid beserta takeaway tanpa `.pin`) dipusatkan vertikal | diabaikan: baris tetap memakai `height`/`rows` | ya |
+
+Contoh grafik dan tiga card bertumpuk:
+
+```markdown
+:::: {.cols widths="2,1" height="85%"}
+
+::: {.plain .panel}
+![](grafik.png)
+:::
+
+::: {.stack rows="1,1,1.3"}
+
+::: {.card title="Ekspor ke UE: US$19,5 miliar"}
+6,9% dari total ekspor Indonesia.
+:::
+
+::: {.card .gold title="EUDR: US$6,9 miliar"}
+Sawit, kayu dan kertas, kopi, kakao, karet.
+:::
+
+::: {.card .rust title="CBAM: US$2,3 miliar"}
+Baja karbon lebih besar dari rantai nikel.
+:::
+
+:::
+
+::::
+
+::: {.takeaway .pin}
+Pesan utama slide.
+:::
+```
+
+Contoh grafik dan angka kunci (`.fit` hanya berpengaruh di Reveal.js):
+
+```markdown
+:::: {.cols .fit widths="3,2"}
+
+::: {.plain .panel}
+![](grafik.png)
+:::
+
+::: {.stack}
+
+::: {.kpi value="30,7%" label="Rasio ULN terhadap PDB"}
+Naik 1,0 poin dari kuartal sebelumnya.
+:::
+
+::: {.kpi .gold value="US$431 miliar" label="Posisi ULN"}
+Sektor publik 48%, swasta 52%.
+:::
+
+:::
+
+::::
+```
+
+Catatan:
+
+- Gambar untuk panel digambar seukuran slotnya dikurangi 0,3 inci (bantalan panel). Pada `widths="2,1"` dengan `height="85%"` itu sekitar 7,8 × 4,4 inci; pada `widths="3,2"` sekitar 7 × 4 inci.
+- Karena `.fit` diabaikan di Beamer, tetap tulis `height` yang wajar untuk PDF, misalnya `height="45%"` untuk satu baris card pendek. Di Reveal.js `height` diabaikan bila ada `.fit`.
+- Card di dalam `.stack` tidak boleh memakai `.wide`; satu `.stack` paling banyak empat slot.
+
+### Langkah berurutan: `.steps`
+
+Bilah-bilah setinggi sama, masing-masing bergeser 0,35 inci ke kanan dari bilah di atasnya, bernomor dalam lingkaran putih. Warna berganti emas, amber, cokelat, gelap; kelas warna pada satu `.step` menggantinya. `height="80%"` (default) mengatur bagian badan slide yang dipakai. Berlaku di Beamer dan Reveal.js.
+
+```markdown
+:::: {.steps}
+
+::: {.step title="MRV dulu: satu sistem pengukuran emisi"}
+Metodologi selaras Annex IV CBAM dan verifikator terakreditasi.
+:::
+
+::: {.step title="Harga karbon domestik yang berurutan"}
+Batas atas emisi, lalu ETS industri, lalu pajak karbon.
+:::
+
+::::
+```
+
+Judul langkah 14pt, keterangan 12pt; paling banyak lima langkah, satu sampai dua baris keterangan per langkah.
+
 ### Gambar
 
 Gunakan slot agar gambar tidak mendorong isi keluar slide:
@@ -181,6 +287,20 @@ Gambar dari code chunk secara default berukuran 12 × 4,8 inci, selebar teks, se
 ### Tabel dan kolom
 
 Tabel otomatis memakai gaya DEN di kedua format: baris judul cokelat muda, baris selang-seling krem, garis tipis. Kolom (`.columns`) dijaga tetap di dalam lebar teks.
+
+Untuk tabel selebar slide, bungkus tabel dengan div `.wide-table`:
+
+```markdown
+::: {.wide-table widths="2,6,4" row-height="0.5"}
+| K/L | Peran terkait | Status |
+|:----|:--------------|:-------|
+| Kemenperin | Koordinator subsektor industri | Permenperin belum terbit |
+:::
+```
+
+- `widths` mengatur lebar kolom relatif. Tanpa `widths`, lebar yang tertulis di tabel (jumlah tanda `-` pada tabel pipa yang panjang, atau lebar kolom tabel grid) diskalakan ke lebar penuh; bila tidak ada, lebar mengikuti sel terpanjang tiap kolom.
+- `row-height` (inci, opsional) adalah tinggi minimum baris isi; teks tetap di atas sel.
+- Berlaku di Beamer dan Reveal.js.
 
 ### `.shrink` tidak didukung
 

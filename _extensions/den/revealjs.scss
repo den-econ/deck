@@ -396,6 +396,42 @@ $presentation-line-height: 1.2;
   }
 }
 
+/* {.takeaway .pin}: bottom edge fixed 0.6in above the foot of the slide */
+.reveal .slides section .takeaway.pin {
+  position: absolute;
+  left: 36px;
+  right: 36px;
+  bottom: 43px;
+  margin: 0;
+}
+
+/* === Centred slide body (fit-slide.lua) === */
+/* A slide with a .cols.fit grid has its content in .den-body, as tall as the
+   slide body (1.2in to the note line at 6.9in, or to above a pinned
+   takeaway). Auto margins centre the content, and keep it at the top rather
+   than over the title when it is taller than the body. */
+.reveal .den-body {
+  display: flex;
+  flex-direction: column;
+  height: 410px;
+
+  &.pinned {
+    height: 350px;
+  }
+
+  > :first-child {
+    margin-top: auto !important;
+  }
+
+  > :last-child {
+    margin-bottom: auto !important;
+  }
+
+  > .takeaway {
+    margin-top: 22px;
+  }
+}
+
 /* === Slot Grid and Cards === */
 /* Use :::: {.cols n=3} with child divs .card, .banner or .plain; see cols.lua.
    Text and heading sizes are fixed per number of columns. */
@@ -441,7 +477,8 @@ $presentation-line-height: 1.2;
   /* A figure fills the body of its slot, whatever wrappers Quarto puts
      around it (a code chunk nests the image in several divs). */
   .fig .card-body,
-  .charted .card-body {
+  .charted .card-body,
+  .panel .card-body {
     flex: 1;
     position: relative;
     min-height: 0;
@@ -472,12 +509,99 @@ $presentation-line-height: 1.2;
   }
 }
 
-/* Colour classes for card headers, filled cards and banners */
-.reveal .cols {
+/* .fit (revealjs only): rows as tall as their tallest slot, figures at their
+   drawn size, charts and stacks centred against their neighbours, card text
+   centred in the card body. */
+.reveal .cols.fit {
+  align-items: stretch;
+
+  > .plain,
+  > .stack {
+    align-self: center;
+  }
+
+  .fig .card-body,
+  .charted .card-body,
+  .panel .card-body {
+    flex: none;
+
+    img {
+      position: static;
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 400px;
+    }
+  }
+
+  .card.titled .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .stack > * {
+    flex: none;
+  }
+}
+
+/* Stack: slots one above the other in one column. Fixed grids share the
+   height by --share (rows="..." on the stack); .fit stacks take their
+   content height. */
+.reveal .cols .stack {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+
+  > * {
+    flex: var(--share, 1) 1 0;
+    min-height: 0;
+  }
+}
+
+/* Big number: value, bold label, a line of text */
+.reveal .cols .kpi {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .kpi-value {
+    color: var(--c);
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.15;
+    margin-bottom: 3px;
+  }
+
+  .kpi-label {
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .kpi-value p,
+  .kpi-label p {
+    margin: 0;
+  }
+}
+
+/* Chart panel: white box with a thin beige frame (.plain .panel) */
+.reveal .cols .plain.panel {
+  display: flex;
+  flex-direction: column;
+  background: $den-white;
+  border: 1px solid $den-table-line;
+  border-radius: 3px;
+  padding: 11px;
+}
+
+/* Colour classes for card headers, filled cards, banners, kpi values and steps */
+.reveal .cols,
+.reveal .steps {
   /* Defaults through :where() carry no specificity, so a colour class wins */
   :where(.card) { --c: #{$den-header}; }
   :where(.card.fill) { --c: #{$den-amber}; }
   :where(.banner) { --c: #{$den-gold}; }
+  :where(.kpi) { --c: #{$den-bar}; }
   .gold { --c: #{$den-gold}; }
   .amber { --c: #{$den-amber}; }
   .rust { --c: #{$den-rust}; }
@@ -660,6 +784,70 @@ $presentation-line-height: 1.2;
 
   .chart-head p {
     margin: 0;
+  }
+}
+
+/* === Steps (steps.lua) === */
+/* Equal bars, each indented 0.35in more than the one above, number in a
+   white disc. */
+.reveal .steps {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  .step {
+    flex: 1 1 0;
+    min-height: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: calc(var(--i) * 25px);
+    padding: 4px 14px 4px 47px;
+    background: var(--c);
+    color: $den-white;
+    border-radius: 4px;
+    font-size: 12px;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .step-num {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: $den-white;
+    color: var(--c);
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 22px;
+    text-align: center;
+  }
+
+  .step-title {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+}
+
+/* === Full-width tables (wide-table.lua) === */
+/* Column widths come from the colgroup pandoc writes; --row-h is the
+   minimum height of a body row, with text at the top of the cell. */
+.reveal .wide-table table {
+  width: 100%;
+  table-layout: fixed;
+
+  td {
+    height: var(--row-h, auto);
+    vertical-align: top;
   }
 }
 

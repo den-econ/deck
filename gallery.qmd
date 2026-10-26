@@ -447,6 +447,157 @@ Gambar di dalam card mengikuti lebar dan tinggi card. Card tanpa judul berupa ko
 
 ::::
 
+## Grafik lebar dan tumpukan card: `widths`, `.panel`, `.stack`
+
+:::: {.cols widths="2,1" height="85%"}
+
+::: {.plain .panel}
+```{python}
+#| fig-width: 7.8
+#| fig-height: 4.4
+fig, ax = plt.subplots(figsize=(7.8, 4.4))
+colours = [den.CLAY] + [den.AMBER_GOLD] * (len(countries) - 1)
+ax.barh(countries[::-1], shares[::-1], color=colours[::-1], height=0.65)
+ax.set_xlabel("Rasio ULN terhadap PDB (persen)")
+fig.tight_layout()
+plt.show()
+```
+:::
+
+::: {.stack rows="1,1,1.3"}
+
+::: {.card title="Ekspor ke UE: US$19,5 miliar"}
+6,9% dari total ekspor Indonesia.
+:::
+
+::: {.card .gold title="EUDR: US$6,9 miliar"}
+Sawit, kayu dan kertas, kopi, kakao, karet.
+:::
+
+::: {.card .rust title="CBAM: US$2,3 miliar"}
+Baja karbon lebih besar dari rantai nikel; usulan CBAM hilir menambah sedikit.
+:::
+
+:::
+
+::::
+
+::: {.takeaway .pin}
+Grafik di kiri, tiga card bertumpuk di kanan; takeaway `.pin` selalu di posisi yang sama.
+:::
+
+## Grafik dan angka kunci: `.kpi` dan `.fit`
+
+:::: {.cols .fit widths="3,2"}
+
+::: {.plain .panel}
+```{python}
+#| fig-width: 7
+#| fig-height: 4
+fig, ax = plt.subplots(figsize=(7, 4))
+ax.plot(range(len(ratio)), ratio, color=den.CLAY, lw=2.5)
+end_label(ax, len(ratio) - 1, ratio[-1], den.CLAY)
+ax.set_xticks(range(len(quarters)), quarters, rotation=90)
+ax.set_ylabel("Persen")
+fig.tight_layout()
+plt.show()
+```
+:::
+
+::: {.stack}
+
+::: {.kpi value="30,7%" label="Rasio ULN terhadap PDB, Tw. II 2026"}
+Naik 1,0 poin dari kuartal sebelumnya.
+:::
+
+::: {.kpi .gold value="US$431 miliar" label="Posisi ULN"}
+Sektor publik 48%, swasta 52%.
+:::
+
+::: {.kpi .dark value="87%" label="Tenor jangka panjang"}
+Pangsa ULN bertenor di atas satu tahun.
+:::
+
+:::
+
+::::
+
+::: {.takeaway .pin}
+Di revealjs, `.fit` memusatkan grafik dan tumpukan angka; di PDF tinggi baris tetap.
+:::
+
+::: {.source}
+angka ilustrasi
+:::
+
+## Tiga card yang tingginya mengikuti isi: `.fit`
+
+:::: {.cols .fit n=3 height="45%"}
+
+::: {.card title="01  Paparan terkonsentrasi"}
+11,9% ekspor ke UE adalah produk CBAM; 92,5% di antaranya besi dan baja.
+:::
+
+::: {.card .rust title="02  Masalah utama: *default value*"}
+*Default value* Indonesia 2–3,5 kali negara pembanding, sehingga biaya CBAM ilustratif melonjak.
+:::
+
+::: {.card .gold title="03  Respons: MRV dulu"}
+MRV yang diakui UE adalah respons termurah dan tercepat.
+:::
+
+::::
+
+::: {.takeaway}
+Di revealjs card dan takeaway dipusatkan bersama; di PDF `height` menentukan tinggi card.
+:::
+
+## Urutan kebijakan: `.steps`
+
+:::: {.steps}
+
+::: {.step title="MRV dulu: satu sistem pengukuran emisi yang diakui UE"}
+Metodologi selaras Annex IV CBAM dan verifikator terakreditasi.
+:::
+
+::: {.step title="Harga karbon domestik yang berurutan"}
+Batas atas emisi, lalu ETS industri, lalu pajak atas kelebihan emisi.
+:::
+
+::: {.step title="Energi bersih untuk kawasan industri ekspor"}
+Kuota PLTS atap dan skema pembelian energi bersih.
+:::
+
+::: {.step title="Diplomasi dagang"}
+Forum dialog IEU-CEPA untuk pengakuan MRV dan bantuan teknis.
+:::
+
+::::
+
+::: {.takeaway .pin}
+Tiap langkah membuka manfaat langkah berikutnya.
+:::
+
+## Tabel selebar slide: `.wide-table`
+
+::: {.wide-table widths="2,6,4" row-height="0.5"}
+| K/L | Peran terkait | Status |
+|:----|:--------------|:-------|
+| Kemenperin | Koordinator subsektor industri; batas atas emisi | Permenperin belum terbit |
+| Kemenkeu | Pajak karbon; pungutan atas karbon | Belum diterapkan luas |
+| KLH/BPLH | SRN-PPI, MRV aksi mitigasi, NDC | Fragmentasi registri |
+| ESDM | ETS pembangkit; kuota PLTS atap | Hambatan akses energi bersih |
+| Kemendag | Diplomasi CBAM dan EUDR | Belum ada direktorat khusus |
+:::
+
+::: {.takeaway .pin}
+Tabel memenuhi lebar slide; `widths` mengatur lebar kolom dan `row-height` tinggi baris.
+:::
+
+::: {.source}
+ilustrasi susunan slide
+:::
+
 ## Bagian 2: Lampiran {.section-divider}
 
 ## Terima kasih {.ending-slide}
