@@ -12,8 +12,8 @@
 % Arial to 85% and Calibri to 98% of the point size.
 \usepackage{fontspec}
 \IfFontExistsTF{Calibri}{\setsansfont{Calibri}[Scale=1.0]}{\setsansfont{Carlito}[Scale=1.0]}
-\IfFontExistsTF{Arial}{\newfontfamily\denheadfont{Arial}[Scale=1.0]}{%
-  \IfFontExistsTF{Liberation Sans}{\newfontfamily\denheadfont{Liberation Sans}[Scale=1.0]}{\newfontfamily\denheadfont{Arimo}[Scale=1.0]}}
+\IfFontExistsTF{Arial}{\newfontfamily\denheadfont{Arial}[Scale=1.0, Ligatures=TeX]}{%
+  \IfFontExistsTF{Liberation Sans}{\newfontfamily\denheadfont{Liberation Sans}[Scale=1.0, Ligatures=TeX]}{\newfontfamily\denheadfont{Arimo}[Scale=1.0, Ligatures=TeX]}}
 \newcommand{\densize}[1]{\fontsize{#1}{\fpeval{1.2*#1}}\selectfont}
 \usefonttheme{professionalfonts}
 % Body text exactly 14pt (beamer's 14pt option gives 14.4pt), so lines wrap

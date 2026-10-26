@@ -151,6 +151,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path, help="folder for the slide images")
     parser.add_argument("--no-images", action="store_true", help="skip writing slide images")
     args = parser.parse_args()
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
     doc = fitz.open(args.pdf)
     out = args.out or args.pdf.with_name(args.pdf.stem + "_check")
